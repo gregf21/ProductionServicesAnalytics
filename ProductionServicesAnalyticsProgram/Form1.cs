@@ -199,6 +199,10 @@ namespace ProductionServicesAnalyticsProgram
 
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
 
         public int findMinutes(String startTime, String endTime)
         {

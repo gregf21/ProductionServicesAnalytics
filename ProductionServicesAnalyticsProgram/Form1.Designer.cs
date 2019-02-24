@@ -31,6 +31,7 @@
             System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
             System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.submitButton = new System.Windows.Forms.Button();
             this.debugButton = new System.Windows.Forms.Button();
             this.startDate = new System.Windows.Forms.DateTimePicker();
@@ -43,14 +44,15 @@
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.analysisTypeCheckBoxList = new System.Windows.Forms.CheckedListBox();
             this.updateButton = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
             // submitButton
             // 
-            this.submitButton.Location = new System.Drawing.Point(297, 296);
+            this.submitButton.Location = new System.Drawing.Point(329, 82);
             this.submitButton.Name = "submitButton";
-            this.submitButton.Size = new System.Drawing.Size(82, 29);
+            this.submitButton.Size = new System.Drawing.Size(175, 91);
             this.submitButton.TabIndex = 0;
             this.submitButton.Text = "Submit";
             this.submitButton.UseVisualStyleBackColor = true;
@@ -58,24 +60,24 @@
             // 
             // debugButton
             // 
-            this.debugButton.Location = new System.Drawing.Point(22, 12);
+            this.debugButton.Location = new System.Drawing.Point(510, 82);
             this.debugButton.Name = "debugButton";
-            this.debugButton.Size = new System.Drawing.Size(75, 23);
+            this.debugButton.Size = new System.Drawing.Size(175, 91);
             this.debugButton.TabIndex = 1;
-            this.debugButton.Text = "Test";
+            this.debugButton.Text = "Test Data";
             this.debugButton.UseVisualStyleBackColor = true;
             this.debugButton.Click += new System.EventHandler(this.debugButton_Click);
             // 
             // startDate
             // 
-            this.startDate.Location = new System.Drawing.Point(22, 98);
+            this.startDate.Location = new System.Drawing.Point(16, 82);
             this.startDate.Name = "startDate";
             this.startDate.Size = new System.Drawing.Size(307, 26);
             this.startDate.TabIndex = 2;
             // 
             // endDate
             // 
-            this.endDate.Location = new System.Drawing.Point(22, 178);
+            this.endDate.Location = new System.Drawing.Point(16, 147);
             this.endDate.Name = "endDate";
             this.endDate.Size = new System.Drawing.Size(307, 26);
             this.endDate.TabIndex = 3;
@@ -83,7 +85,7 @@
             // startDateLabel
             // 
             this.startDateLabel.AutoSize = true;
-            this.startDateLabel.Location = new System.Drawing.Point(18, 75);
+            this.startDateLabel.Location = new System.Drawing.Point(12, 59);
             this.startDateLabel.Name = "startDateLabel";
             this.startDateLabel.Size = new System.Drawing.Size(87, 20);
             this.startDateLabel.TabIndex = 4;
@@ -92,7 +94,7 @@
             // endDateLabel
             // 
             this.endDateLabel.AutoSize = true;
-            this.endDateLabel.Location = new System.Drawing.Point(22, 155);
+            this.endDateLabel.Location = new System.Drawing.Point(16, 124);
             this.endDateLabel.Name = "endDateLabel";
             this.endDateLabel.Size = new System.Drawing.Size(77, 20);
             this.endDateLabel.TabIndex = 5;
@@ -101,9 +103,10 @@
             // analysisTypeLabel
             // 
             this.analysisTypeLabel.AutoSize = true;
-            this.analysisTypeLabel.Location = new System.Drawing.Point(482, 38);
+            this.analysisTypeLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.analysisTypeLabel.Location = new System.Drawing.Point(57, 188);
             this.analysisTypeLabel.Name = "analysisTypeLabel";
-            this.analysisTypeLabel.Size = new System.Drawing.Size(109, 20);
+            this.analysisTypeLabel.Size = new System.Drawing.Size(168, 29);
             this.analysisTypeLabel.TabIndex = 9;
             this.analysisTypeLabel.Text = "Analysis Type:";
             // 
@@ -111,18 +114,18 @@
             // 
             this.analysisTypeListBox.FormattingEnabled = true;
             this.analysisTypeListBox.ItemHeight = 20;
-            this.analysisTypeListBox.Location = new System.Drawing.Point(47, 388);
+            this.analysisTypeListBox.Location = new System.Drawing.Point(20, 313);
             this.analysisTypeListBox.Name = "analysisTypeListBox";
-            this.analysisTypeListBox.Size = new System.Drawing.Size(120, 84);
+            this.analysisTypeListBox.Size = new System.Drawing.Size(244, 84);
             this.analysisTypeListBox.TabIndex = 10;
             // 
             // nameListBox
             // 
             this.nameListBox.FormattingEnabled = true;
             this.nameListBox.ItemHeight = 20;
-            this.nameListBox.Location = new System.Drawing.Point(47, 546);
+            this.nameListBox.Location = new System.Drawing.Point(20, 403);
             this.nameListBox.Name = "nameListBox";
-            this.nameListBox.Size = new System.Drawing.Size(120, 84);
+            this.nameListBox.Size = new System.Drawing.Size(244, 184);
             this.nameListBox.TabIndex = 11;
             // 
             // chart1
@@ -131,13 +134,13 @@
             this.chart1.ChartAreas.Add(chartArea1);
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
-            this.chart1.Location = new System.Drawing.Point(417, 330);
+            this.chart1.Location = new System.Drawing.Point(270, 188);
             this.chart1.Name = "chart1";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(300, 300);
+            this.chart1.Size = new System.Drawing.Size(806, 399);
             this.chart1.TabIndex = 12;
             this.chart1.Text = "chart1";
             // 
@@ -148,26 +151,38 @@
             "Day",
             "Month",
             "Year"});
-            this.analysisTypeCheckBoxList.Location = new System.Drawing.Point(486, 116);
+            this.analysisTypeCheckBoxList.Location = new System.Drawing.Point(20, 220);
             this.analysisTypeCheckBoxList.Name = "analysisTypeCheckBoxList";
-            this.analysisTypeCheckBoxList.Size = new System.Drawing.Size(175, 67);
+            this.analysisTypeCheckBoxList.Size = new System.Drawing.Size(244, 88);
             this.analysisTypeCheckBoxList.TabIndex = 13;
             // 
             // updateButton
             // 
-            this.updateButton.Location = new System.Drawing.Point(297, 644);
+            this.updateButton.Location = new System.Drawing.Point(691, 82);
             this.updateButton.Name = "updateButton";
-            this.updateButton.Size = new System.Drawing.Size(83, 30);
+            this.updateButton.Size = new System.Drawing.Size(175, 91);
             this.updateButton.TabIndex = 14;
             this.updateButton.Text = "Update";
             this.updateButton.UseVisualStyleBackColor = true;
             this.updateButton.Click += new System.EventHandler(this.updateButton_Click);
             // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(208, 9);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(677, 37);
+            this.label1.TabIndex = 15;
+            this.label1.Text = "Virginia Tech Production Services Analytics";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(840, 712);
+            this.BackColor = System.Drawing.SystemColors.InactiveCaption;
+            this.ClientSize = new System.Drawing.Size(1084, 611);
+            this.Controls.Add(this.label1);
             this.Controls.Add(this.updateButton);
             this.Controls.Add(this.analysisTypeCheckBoxList);
             this.Controls.Add(this.chart1);
@@ -180,8 +195,10 @@
             this.Controls.Add(this.startDate);
             this.Controls.Add(this.debugButton);
             this.Controls.Add(this.submitButton);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Production Services Analytics";
+            this.Load += new System.EventHandler(this.Form1_Load);
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -202,6 +219,7 @@
         private System.Windows.Forms.DataVisualization.Charting.Chart chart1;
         private System.Windows.Forms.CheckedListBox analysisTypeCheckBoxList;
         private System.Windows.Forms.Button updateButton;
+        private System.Windows.Forms.Label label1;
     }
 }
 
