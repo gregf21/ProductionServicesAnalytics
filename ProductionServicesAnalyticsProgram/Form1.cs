@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Windows.Forms.DataVisualization.Charting;
 
 namespace ProductionServicesAnalyticsProgram
 {
@@ -80,7 +81,7 @@ namespace ProductionServicesAnalyticsProgram
 
             //make the array of minutes per worker
 
-            int dayIndexChange = 1, monthIndexChange = 1, yearIndexChange = 1;
+            int dayIndexChange = 0, monthIndexChange = 0, yearIndexChange = 0;
 
             if (analysisTypeCheckBoxList.GetItemChecked(0))
             {
@@ -140,23 +141,22 @@ namespace ProductionServicesAnalyticsProgram
                                 tempEndTime += " " + tempWorkerDataArray[6];
                             }
                         }
-
                         tempTime = findMinutes(tempStartTime, tempEndTime);
 
                         if (analysisTypeCheckBoxList.GetItemChecked(0))
                         {
-                            minutesPerWorkerByDay[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * dayIndexChange] += tempTime;
-                            minutesPerWorkerByDay[(dayIndexChange - 1) * indexByName.Count] += tempTime;
+                            minutesPerWorkerByDay[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] + (dayIndexChange * indexForDictionary)] += tempTime;
+                            minutesPerWorkerByDay[dayIndexChange * indexByName.Count] += tempTime;
                         }
                         if (analysisTypeCheckBoxList.GetItemChecked(1))
                         {
-                            minutesPerWorkerByMonth[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * monthIndexChange] += tempTime;
-                            minutesPerWorkerByMonth[(monthIndexChange - 1) * indexByName.Count] += tempTime;
+                            minutesPerWorkerByMonth[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * (monthIndexChange * indexForDictionary)] += tempTime;
+                            minutesPerWorkerByMonth[monthIndexChange * indexByName.Count] += tempTime;
                         }
                         if (analysisTypeCheckBoxList.GetItemChecked(2))
                         {
-                            minutesPerWorkerByYear[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * yearIndexChange] += tempTime;
-                            minutesPerWorkerByYear[(yearIndexChange - 1) * indexByName.Count] += tempTime;
+                            minutesPerWorkerByYear[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * (yearIndexChange * indexForDictionary)] += tempTime;
+                            minutesPerWorkerByYear[yearIndexChange * indexByName.Count] += tempTime;
                         }
                     }
 
@@ -196,12 +196,29 @@ namespace ProductionServicesAnalyticsProgram
 
         private void updateButton_Click(object sender, EventArgs e)
         {
+            chart1.Series[0].Points.Clear();
+            double[] dataArrayForSelectedWorker = null;
+            double total = 0;
+            grabDataFor(nameListBox.SelectedValue.ToString(), ref dataArrayForSelectedWorker);
 
+            //loop through data and output to graph
+            for (int i = 0; i < dataArrayForSelectedWorker.Length; i++)
+            {
+                chart1.Series[0].Points.AddXY(i+1, dataArrayForSelectedWorker[i]);
+                chart1.Series[0].Points[i].MarkerStyle = MarkerStyle.Circle;
+                chart1.Series[0].Points[i].MarkerSize = 14;
+                chart1.Series[0].Points[i].MarkerColor = Color.Blue;
+
+                total += dataArrayForSelectedWorker[i];
+            }
+
+            totalHoursLabel.Text = "Total Hours: " + total;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            chart1.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
+            chart1.Series[0].ChartType = SeriesChartType.Line;
+            chart1.ChartAreas[0].AxisX.IsStartedFromZero = false;
         }
 
         public int findMinutes(String startTime, String endTime)
@@ -264,31 +281,48 @@ namespace ProductionServicesAnalyticsProgram
         //for testing methods and functionality of specific lines
         private void debugButton_Click(object sender, EventArgs e)
         {
-            /*
-            //test the data for find minutes function
 
-            //15 hours, 900 minutes
-            Console.WriteLine(findMinutes("NOON", "3:00 AM"));
+        }
 
-            //12 hours, 720 minutes
-            Console.WriteLine(findMinutes("NOON", "MIDNIGHT"));
+        private void grabDataFor(String name, ref double[] dataArray)
+        {
+            int curIndex = indexByName[name], iCount = 0;
+            //makes array for days
 
-            //12 hours, 720 minutes
-            Console.WriteLine(findMinutes("MIDNIGHT", "NOON"));
+            //if day is selected
+            if (analysisTypeListBox.SelectedIndex == 0)
+                iCount = (endDate.Value.Date - startDate.Value.Date).Days + 1;
+            //if month is selected
+            else if (analysisTypeListBox.SelectedIndex == 1)
+                iCount = (endDate.Value.Year - startDate.Value.Year) * 12 + (endDate.Value.Month - startDate.Value.Month) + 1;
+            //if year is selected
+            else if (analysisTypeListBox.SelectedIndex == 2)
+                iCount = (endDate.Value.Year - startDate.Value.Year) + 1;
+            else
+                return; //do noting maybe throw error
 
-            //3.5 hours, 210 minutes
-            Console.WriteLine(findMinutes("3:00 PM", "6:30 PM"));
-            */
+            if (iCount != 0)
+                dataArray = new double[iCount];
 
-            //grab total days inclusive with start day
-            DateTime start = startDate.Value;
-            DateTime end = endDate.Value;
+            //make data array
+            for (int i = 0; i < iCount; i++)
+            {
+                //if day is selected
+                if (analysisTypeListBox.SelectedIndex == 0)
+                    dataArray[i] = minutesPerWorkerByDay[curIndex] / 60;
+                //if month is selected
+                else if (analysisTypeListBox.SelectedIndex == 1)
+                    dataArray[i] = minutesPerWorkerByMonth[curIndex] / 60;
+                //if year is selected
+                else if (analysisTypeListBox.SelectedIndex == 2)
+                    dataArray[i] = minutesPerWorkerByYear[curIndex] / 60;
+                else
+                    dataArray[i] = 0;
 
-            int totalDays = (end.Date - start.Date).Days;
+                //update the current index
+                curIndex += indexByName.Count;
+            }
 
-
-
-            int x = 4;
         }
     }
 }

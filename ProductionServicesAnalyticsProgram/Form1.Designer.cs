@@ -45,6 +45,7 @@
             this.analysisTypeCheckBoxList = new System.Windows.Forms.CheckedListBox();
             this.updateButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.totalHoursLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -176,12 +177,22 @@
             this.label1.TabIndex = 15;
             this.label1.Text = "Virginia Tech Production Services Analytics";
             // 
+            // totalHoursLabel
+            // 
+            this.totalHoursLabel.AutoSize = true;
+            this.totalHoursLabel.Location = new System.Drawing.Point(441, 612);
+            this.totalHoursLabel.Name = "totalHoursLabel";
+            this.totalHoursLabel.Size = new System.Drawing.Size(99, 20);
+            this.totalHoursLabel.TabIndex = 16;
+            this.totalHoursLabel.Text = "Total Hours: ";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
-            this.ClientSize = new System.Drawing.Size(1084, 611);
+            this.ClientSize = new System.Drawing.Size(1084, 655);
+            this.Controls.Add(this.totalHoursLabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.updateButton);
             this.Controls.Add(this.analysisTypeCheckBoxList);
@@ -220,6 +231,7 @@
         private System.Windows.Forms.CheckedListBox analysisTypeCheckBoxList;
         private System.Windows.Forms.Button updateButton;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label totalHoursLabel;
     }
 }
 
