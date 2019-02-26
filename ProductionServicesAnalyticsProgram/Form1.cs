@@ -84,15 +84,15 @@ namespace ProductionServicesAnalyticsProgram
 
             if (analysisTypeCheckBoxList.GetItemChecked(0))
             {
-                minutesPerWorkerByDay = new int[indexForDictionary * ((int)(endDate.Value - startDate.Value).TotalDays + 1)];
+                minutesPerWorkerByDay = new int[indexForDictionary * ((endDate.Value.Date - startDate.Value.Date).Days + 1)];
             }
             if (analysisTypeCheckBoxList.GetItemChecked(1))
             {
-                minutesPerWorkerByMonth = new int[indexForDictionary * ((endDate.Value.Year - startDate.Value.Year) * 12 + (endDate.Value.Month - startDate.Value.Month))];
+                minutesPerWorkerByMonth = new int[indexForDictionary * ((endDate.Value.Year - startDate.Value.Year) * 12 + (endDate.Value.Month - startDate.Value.Month) + 1)];
             }
             if (analysisTypeCheckBoxList.GetItemChecked(2))
             {
-                minutesPerWorkerByYear = new int[indexForDictionary * ((endDate.Value.Year - startDate.Value.Year) * 12)];
+                minutesPerWorkerByYear = new int[indexForDictionary * ((endDate.Value.Year - startDate.Value.Year) + 1)];
             }
             //start analysis by day
 
@@ -103,7 +103,7 @@ namespace ProductionServicesAnalyticsProgram
 
 
             int cMonth = startDate.Value.Month, cDay = startDate.Value.Day, cYear = startDate.Value.Year;
-            for (int dateCounter = (int)(endDate.Value - startDate.Value).TotalDays + 1; dateCounter > 0; dateCounter--)
+            for (int dateCounter = (endDate.Value.Date - startDate.Value.Date).Days + 1; dateCounter > 0; dateCounter--)
             {
                 driver.Url = "http://172.21.20.41/cepdotnet/CEPHome.aspx?day=" + cDay + "&month=" + cMonth + "&year=" + cYear;
 
@@ -146,39 +146,39 @@ namespace ProductionServicesAnalyticsProgram
                         if (analysisTypeCheckBoxList.GetItemChecked(0))
                         {
                             minutesPerWorkerByDay[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * dayIndexChange] += tempTime;
-                            minutesPerWorkerByDay[(dayIndexChange - 1) * indexByName.Count] = tempTime;
+                            minutesPerWorkerByDay[(dayIndexChange - 1) * indexByName.Count] += tempTime;
                         }
                         if (analysisTypeCheckBoxList.GetItemChecked(1))
                         {
                             minutesPerWorkerByMonth[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * monthIndexChange] += tempTime;
-                            minutesPerWorkerByMonth[(monthIndexChange - 1) * indexByName.Count] = tempTime;
+                            minutesPerWorkerByMonth[(monthIndexChange - 1) * indexByName.Count] += tempTime;
                         }
                         if (analysisTypeCheckBoxList.GetItemChecked(2))
                         {
                             minutesPerWorkerByYear[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * yearIndexChange] += tempTime;
-                            minutesPerWorkerByYear[(yearIndexChange - 1) * indexByName.Count] = tempTime;
+                            minutesPerWorkerByYear[(yearIndexChange - 1) * indexByName.Count] += tempTime;
                         }
-                    }
-
-                    cDay++;
-                    dayIndexChange++;
-                    int daysInMonth = System.DateTime.DaysInMonth(cYear, cMonth);
-                    if (cDay > daysInMonth)
-                    {
-                        cDay = 1;
-                        cMonth++;
-                        monthIndexChange++;
-                        if (cMonth > 12)
-                        {
-                            cMonth = 1;
-                            cYear++;
-                            yearIndexChange++;
-                        }
-
                     }
 
                 }
-                
+
+                cDay++;
+                dayIndexChange++;
+                int daysInMonth = System.DateTime.DaysInMonth(cYear, cMonth);
+                if (cDay > daysInMonth)
+                {
+                    cDay = 1;
+                    cMonth++;
+                    monthIndexChange++;
+                    if (cMonth > 12)
+                    {
+                        cMonth = 1;
+                        cYear++;
+                        yearIndexChange++;
+                    }
+
+                }
+
             }
             driver.Quit();
 
@@ -264,6 +264,7 @@ namespace ProductionServicesAnalyticsProgram
         //for testing methods and functionality of specific lines
         private void debugButton_Click(object sender, EventArgs e)
         {
+            /*
             //test the data for find minutes function
 
             //15 hours, 900 minutes
@@ -277,8 +278,17 @@ namespace ProductionServicesAnalyticsProgram
 
             //3.5 hours, 210 minutes
             Console.WriteLine(findMinutes("3:00 PM", "6:30 PM"));
+            */
+
+            //grab total days inclusive with start day
+            DateTime start = startDate.Value;
+            DateTime end = endDate.Value;
+
+            int totalDays = (end.Date - start.Date).Days;
 
 
+
+            int x = 4;
         }
     }
 }
