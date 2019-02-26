@@ -201,7 +201,7 @@ namespace ProductionServicesAnalyticsProgram
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            chart1.Series[0].ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Line;
         }
 
         public int findMinutes(String startTime, String endTime)
