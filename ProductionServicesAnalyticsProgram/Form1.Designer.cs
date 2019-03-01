@@ -33,7 +33,6 @@
             System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.submitButton = new System.Windows.Forms.Button();
-            this.debugButton = new System.Windows.Forms.Button();
             this.startDate = new System.Windows.Forms.DateTimePicker();
             this.endDate = new System.Windows.Forms.DateTimePicker();
             this.startDateLabel = new System.Windows.Forms.Label();
@@ -58,16 +57,6 @@
             this.submitButton.Text = "Submit";
             this.submitButton.UseVisualStyleBackColor = true;
             this.submitButton.Click += new System.EventHandler(this.submitButton_Click);
-            // 
-            // debugButton
-            // 
-            this.debugButton.Location = new System.Drawing.Point(510, 82);
-            this.debugButton.Name = "debugButton";
-            this.debugButton.Size = new System.Drawing.Size(175, 91);
-            this.debugButton.TabIndex = 1;
-            this.debugButton.Text = "Test Data";
-            this.debugButton.UseVisualStyleBackColor = true;
-            this.debugButton.Click += new System.EventHandler(this.debugButton_Click);
             // 
             // startDate
             // 
@@ -144,9 +133,11 @@
             this.chart1.Size = new System.Drawing.Size(806, 399);
             this.chart1.TabIndex = 12;
             this.chart1.Text = "chart1";
+            this.chart1.Click += new System.EventHandler(this.chart1_Click);
             // 
             // analysisTypeCheckBoxList
             // 
+            this.analysisTypeCheckBoxList.CheckOnClick = true;
             this.analysisTypeCheckBoxList.FormattingEnabled = true;
             this.analysisTypeCheckBoxList.Items.AddRange(new object[] {
             "Day",
@@ -156,14 +147,15 @@
             this.analysisTypeCheckBoxList.Name = "analysisTypeCheckBoxList";
             this.analysisTypeCheckBoxList.Size = new System.Drawing.Size(244, 88);
             this.analysisTypeCheckBoxList.TabIndex = 13;
+            this.analysisTypeCheckBoxList.SelectedIndexChanged += new System.EventHandler(this.analysisTypeCheckBoxList_SelectedIndexChanged);
             // 
             // updateButton
             // 
-            this.updateButton.Location = new System.Drawing.Point(691, 82);
+            this.updateButton.Location = new System.Drawing.Point(510, 82);
             this.updateButton.Name = "updateButton";
             this.updateButton.Size = new System.Drawing.Size(175, 91);
             this.updateButton.TabIndex = 14;
-            this.updateButton.Text = "Update";
+            this.updateButton.Text = "Update Chart";
             this.updateButton.UseVisualStyleBackColor = true;
             this.updateButton.Click += new System.EventHandler(this.updateButton_Click);
             // 
@@ -180,9 +172,10 @@
             // totalHoursLabel
             // 
             this.totalHoursLabel.AutoSize = true;
-            this.totalHoursLabel.Location = new System.Drawing.Point(441, 612);
+            this.totalHoursLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.totalHoursLabel.Location = new System.Drawing.Point(263, 609);
             this.totalHoursLabel.Name = "totalHoursLabel";
-            this.totalHoursLabel.Size = new System.Drawing.Size(99, 20);
+            this.totalHoursLabel.Size = new System.Drawing.Size(215, 37);
             this.totalHoursLabel.TabIndex = 16;
             this.totalHoursLabel.Text = "Total Hours: ";
             // 
@@ -204,7 +197,6 @@
             this.Controls.Add(this.startDateLabel);
             this.Controls.Add(this.endDate);
             this.Controls.Add(this.startDate);
-            this.Controls.Add(this.debugButton);
             this.Controls.Add(this.submitButton);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
@@ -219,7 +211,6 @@
         #endregion
 
         private System.Windows.Forms.Button submitButton;
-        private System.Windows.Forms.Button debugButton;
         private System.Windows.Forms.DateTimePicker startDate;
         private System.Windows.Forms.DateTimePicker endDate;
         private System.Windows.Forms.Label startDateLabel;

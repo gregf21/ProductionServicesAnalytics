@@ -206,7 +206,7 @@ namespace ProductionServicesAnalyticsProgram
             {
                 chart1.Series[0].Points.AddXY(i+1, dataArrayForSelectedWorker[i]);
                 chart1.Series[0].Points[i].MarkerStyle = MarkerStyle.Circle;
-                chart1.Series[0].Points[i].MarkerSize = 14;
+                chart1.Series[0].Points[i].MarkerSize = 10;
                 chart1.Series[0].Points[i].MarkerColor = Color.Blue;
 
                 total += dataArrayForSelectedWorker[i];
@@ -276,6 +276,21 @@ namespace ProductionServicesAnalyticsProgram
             }
             //returns for calulated amount of minutes
             return endMinutes - startMinutes; 
+        }
+
+        private void chart1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void filter_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void analysisTypeCheckBoxList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
 
         //for testing methods and functionality of specific lines
