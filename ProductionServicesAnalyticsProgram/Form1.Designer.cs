@@ -64,6 +64,7 @@
             this.startDate.Name = "startDate";
             this.startDate.Size = new System.Drawing.Size(307, 26);
             this.startDate.TabIndex = 2;
+            this.startDate.ValueChanged += new System.EventHandler(this.startDate_ValueChanged);
             // 
             // endDate
             // 
@@ -108,6 +109,7 @@
             this.analysisTypeListBox.Name = "analysisTypeListBox";
             this.analysisTypeListBox.Size = new System.Drawing.Size(244, 84);
             this.analysisTypeListBox.TabIndex = 10;
+            this.analysisTypeListBox.SelectedIndexChanged += new System.EventHandler(this.analysisTypeListBox_SelectedIndexChanged);
             // 
             // nameListBox
             // 

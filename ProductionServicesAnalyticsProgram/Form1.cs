@@ -197,21 +197,52 @@ namespace ProductionServicesAnalyticsProgram
         private void updateButton_Click(object sender, EventArgs e)
         {
             chart1.Series[0].Points.Clear();
+            chart1.ChartAreas[0].AxisX.Minimum = startDate.Value.Day;
             double[] dataArrayForSelectedWorker = null;
             double total = 0;
             grabDataFor(nameListBox.SelectedValue.ToString(), ref dataArrayForSelectedWorker);
 
             //loop through data and output to graph
-            for (int i = 0; i < dataArrayForSelectedWorker.Length; i++)
+
+            /* (analysisTypeCheckBoxList.SelectedIndex == 0)
+            {*/
+                int counter = 0;
+                int i = startDate.Value.Day;
+                do
+                {
+                    chart1.Series[0].Points.AddXY(i, dataArrayForSelectedWorker[counter]);
+                    chart1.Series[0].Points[counter].MarkerStyle = MarkerStyle.Circle;
+                    chart1.Series[0].Points[counter].MarkerSize = 10;
+                    chart1.Series[0].Points[counter].MarkerColor = Color.Blue;
+                    total += dataArrayForSelectedWorker[counter];
+                    i++;
+                    counter++;
+                } while (counter < dataArrayForSelectedWorker.Length);
+            /*}
+            else if (analysisTypeCheckBoxList.SelectedIndex == 1)
             {
-                chart1.Series[0].Points.AddXY(i+1, dataArrayForSelectedWorker[i]);
-                chart1.Series[0].Points[i].MarkerStyle = MarkerStyle.Circle;
-                chart1.Series[0].Points[i].MarkerSize = 10;
-                chart1.Series[0].Points[i].MarkerColor = Color.Blue;
+                 for (int i = 0; i < dataArrayForSelectedWorker.Length; i++)
+                 {
+                     chart1.Series[0].Points.AddXY(i+1, dataArrayForSelectedWorker[i]);
+                     chart1.Series[0].Points[i].MarkerStyle = MarkerStyle.Circle;
+                     chart1.Series[0].Points[i].MarkerSize = 10;
+                     chart1.Series[0].Points[i].MarkerColor = Color.Blue;
 
-                total += dataArrayForSelectedWorker[i];
+                     total += dataArrayForSelectedWorker[i];
+                 }
             }
+            else if (analysisTypeCheckBoxList.SelectedIndex == 2)
+            {
+                for (int i = 0; i < dataArrayForSelectedWorker.Length; i++)
+                {
+                    chart1.Series[0].Points.AddXY(i + 1, dataArrayForSelectedWorker[i]);
+                    chart1.Series[0].Points[i].MarkerStyle = MarkerStyle.Circle;
+                    chart1.Series[0].Points[i].MarkerSize = 10;
+                    chart1.Series[0].Points[i].MarkerColor = Color.Blue;
 
+                    total += dataArrayForSelectedWorker[i];
+                }
+            }*/
             totalHoursLabel.Text = "Total Hours: " + total;
         }
 
@@ -219,6 +250,8 @@ namespace ProductionServicesAnalyticsProgram
         {
             chart1.Series[0].ChartType = SeriesChartType.Line;
             chart1.ChartAreas[0].AxisX.IsStartedFromZero = false;
+            chart1.ChartAreas[0].AxisY.Title = "Hours";
+            chart1.Series[0].LegendText = "Hours Worked";
         }
 
         public int findMinutes(String startTime, String endTime)
@@ -293,6 +326,16 @@ namespace ProductionServicesAnalyticsProgram
 
         }
 
+        private void analysisTypeListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void startDate_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
         //for testing methods and functionality of specific lines
         private void debugButton_Click(object sender, EventArgs e)
         {
@@ -324,13 +367,22 @@ namespace ProductionServicesAnalyticsProgram
             {
                 //if day is selected
                 if (analysisTypeListBox.SelectedIndex == 0)
+                {
                     dataArray[i] = minutesPerWorkerByDay[curIndex] / 60;
+                    chart1.ChartAreas[0].AxisX.Title = "Days";
+                }
                 //if month is selected
                 else if (analysisTypeListBox.SelectedIndex == 1)
+                {
                     dataArray[i] = minutesPerWorkerByMonth[curIndex] / 60;
+                    chart1.ChartAreas[0].AxisX.Title = "Months";
+                }
                 //if year is selected
                 else if (analysisTypeListBox.SelectedIndex == 2)
+                {
                     dataArray[i] = minutesPerWorkerByYear[curIndex] / 60;
+                    chart1.ChartAreas[0].AxisX.Title = "Years";
+                }
                 else
                     dataArray[i] = 0;
 
