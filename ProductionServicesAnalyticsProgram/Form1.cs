@@ -10,6 +10,10 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
+using System.Collections.ObjectModel;
+using System.IO;
+using System.Diagnostics;
+using System.Globalization;
 
 namespace ProductionServicesAnalyticsProgram
 {
@@ -35,9 +39,14 @@ namespace ProductionServicesAnalyticsProgram
 
         private void submitButton_Click(object sender, EventArgs e)
         {
-            String user = "MBochar";
-            String pass = "g27cp1qm";
 
+            if (usernameBox.Text != "" && passwordBox.Text != "")
+            {
+                System.IO.File.WriteAllLines(@"userData.txt", new string[] { usernameBox.Text, passwordBox.Text });
+            }
+
+            String user = usernameBox.Text;
+            String pass = passwordBox.Text;
             IWebDriver driver = new ChromeDriver();
             driver.Url = "http://172.21.20.41/cepdotnet/CEPloginToCEP.aspx";
 
@@ -252,6 +261,15 @@ namespace ProductionServicesAnalyticsProgram
             chart1.ChartAreas[0].AxisX.IsStartedFromZero = false;
             chart1.ChartAreas[0].AxisY.Title = "Hours";
             chart1.Series[0].LegendText = "Hours Worked";
+            String[] lines;
+            if (File.Exists(@"userData.txt") == true)
+            {
+                lines = System.IO.File.ReadAllLines(@"userData.txt");
+                if (lines[0] != null)
+                    usernameBox.Text = lines[0];
+                if (lines[1] != null)
+                    passwordBox.Text = lines[1];
+            }
         }
 
         public int findMinutes(String startTime, String endTime)
@@ -332,6 +350,16 @@ namespace ProductionServicesAnalyticsProgram
         }
 
         private void startDate_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
         }

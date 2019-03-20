@@ -45,6 +45,10 @@
             this.updateButton = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.totalHoursLabel = new System.Windows.Forms.Label();
+            this.usernameBox = new System.Windows.Forms.TextBox();
+            this.passwordBox = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -181,12 +185,51 @@
             this.totalHoursLabel.TabIndex = 16;
             this.totalHoursLabel.Text = "Total Hours: ";
             // 
+            // usernameBox
+            // 
+            this.usernameBox.Location = new System.Drawing.Point(805, 102);
+            this.usernameBox.Name = "usernameBox";
+            this.usernameBox.Size = new System.Drawing.Size(233, 26);
+            this.usernameBox.TabIndex = 17;
+            this.usernameBox.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // passwordBox
+            // 
+            this.passwordBox.Location = new System.Drawing.Point(805, 134);
+            this.passwordBox.Name = "passwordBox";
+            this.passwordBox.Size = new System.Drawing.Size(233, 26);
+            this.passwordBox.TabIndex = 18;
+            this.passwordBox.UseSystemPasswordChar = true;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(716, 105);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(83, 20);
+            this.label2.TabIndex = 19;
+            this.label2.Text = "Username";
+            this.label2.Click += new System.EventHandler(this.label2_Click);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(721, 137);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(78, 20);
+            this.label3.TabIndex = 20;
+            this.label3.Text = "Password";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.ClientSize = new System.Drawing.Size(1084, 655);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.passwordBox);
+            this.Controls.Add(this.usernameBox);
             this.Controls.Add(this.totalHoursLabel);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.updateButton);
@@ -225,6 +268,10 @@
         private System.Windows.Forms.Button updateButton;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label totalHoursLabel;
+        private System.Windows.Forms.TextBox usernameBox;
+        private System.Windows.Forms.TextBox passwordBox;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
     }
 }
 
