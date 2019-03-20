@@ -49,6 +49,8 @@
             this.passwordBox = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.excelExport = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -179,11 +181,12 @@
             // 
             this.totalHoursLabel.AutoSize = true;
             this.totalHoursLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.totalHoursLabel.Location = new System.Drawing.Point(263, 609);
+            this.totalHoursLabel.Location = new System.Drawing.Point(418, 603);
             this.totalHoursLabel.Name = "totalHoursLabel";
             this.totalHoursLabel.Size = new System.Drawing.Size(215, 37);
             this.totalHoursLabel.TabIndex = 16;
             this.totalHoursLabel.Text = "Total Hours: ";
+            this.totalHoursLabel.Click += new System.EventHandler(this.totalHoursLabel_Click);
             // 
             // usernameBox
             // 
@@ -220,12 +223,34 @@
             this.label3.TabIndex = 20;
             this.label3.Text = "Password";
             // 
+            // excelExport
+            // 
+            this.excelExport.Location = new System.Drawing.Point(20, 593);
+            this.excelExport.Name = "excelExport";
+            this.excelExport.Size = new System.Drawing.Size(244, 53);
+            this.excelExport.TabIndex = 21;
+            this.excelExport.Text = "Export to Excel";
+            this.excelExport.UseVisualStyleBackColor = true;
+            this.excelExport.Click += new System.EventHandler(this.excelExport_Click);
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(270, 593);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(142, 53);
+            this.button1.TabIndex = 22;
+            this.button1.Text = "Help";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.ClientSize = new System.Drawing.Size(1084, 655);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.excelExport);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.passwordBox);
@@ -272,6 +297,8 @@
         private System.Windows.Forms.TextBox passwordBox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button excelExport;
+        private System.Windows.Forms.Button button1;
     }
 }
 

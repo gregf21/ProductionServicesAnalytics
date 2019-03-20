@@ -364,6 +364,81 @@ namespace ProductionServicesAnalyticsProgram
 
         }
 
+        private void excelExport_Click(object sender, EventArgs e)
+        {/*
+            String[] jobsData = new String[jobs.Count];
+            Microsoft.Office.Interop.Excel.Application oXL;
+            Microsoft.Office.Interop.Excel._Workbook oWB;
+            Microsoft.Office.Interop.Excel._Worksheet oSheet;
+            Microsoft.Office.Interop.Excel.Range oRng;
+            object misvalue = System.Reflection.Missing.Value;
+            try
+            {
+                //Start Excel and get Application object.
+                oXL = new Microsoft.Office.Interop.Excel.Application();
+                oXL.Visible = true;
+
+                //Get a new workbook.
+                oWB = (Microsoft.Office.Interop.Excel._Workbook)(oXL.Workbooks.Add(""));
+                oSheet = (Microsoft.Office.Interop.Excel._Worksheet)oWB.ActiveSheet;
+
+                //Add table headers going cell by cell.
+                oSheet.Cells[1, 1] = "Virginia Tech Production Services";
+                oSheet.Cells[2, 1] = "Shift Name";
+                oSheet.Cells[2, 2] = "Shift Date";
+                oSheet.Cells[2, 3] = "Shift Staff";
+                oSheet.Cells[2, 4] = "Time Scheduled";
+                oSheet.Cells[1, 4] = "Number of Shifts: " + jobs.Count;
+                int row = 4;
+                foreach (Job j in jobs)
+                {
+                    oSheet.Cells[row, 1] = j.getJobName();
+                    oSheet.Cells[row, 2] = j.getJobDateTime().ToString("dddd, dd MMMM yyyy");
+                    foreach (Person w in j.getWorkers())
+                    {
+                        oSheet.Cells[row, 3] = w.getFirstName() + " " + w.getLastName();
+                        oSheet.Cells[row, 4] = w.getFormattedTime(w.getStartTime()) + " - " + w.getFormattedTime(w.getEndTime());
+                        row += 1;
+                    }
+                    row += 1;
+                }
+
+
+                //Format A1:D1 as bold, vertical alignment = center.
+                oSheet.get_Range("A1", "D1").Font.Bold = true;
+                oSheet.get_Range("A1", "D1").VerticalAlignment =
+                    Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
+                oSheet.get_Range("A2", "D2").Font.Underline = true;
+                oSheet.get_Range("A2", "D2").VerticalAlignment =
+                    Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
+                // Create an array to multiple values at once.
+                string[,] saNames = new string[5, 2];
+
+                //AutoFit columns A:D.
+                oRng = oSheet.get_Range("A1", "J1");
+                oRng.EntireColumn.AutoFit();
+                oXL.Visible = true;
+                oXL.UserControl = true;
+            }
+            catch
+            {
+
+            }*/
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Enter the start and end dates, enter a CEP username and password, and press submit.\n" +
+                "To update the chart to the selected person's data, press update chart.\n\n\n" +
+                "Created by Greg Fairbanks and Matthew Bocharnikov.\n\n" +
+                "For use at Virginia Tech Production Services.");
+        }
+
+        private void totalHoursLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
         //for testing methods and functionality of specific lines
         private void debugButton_Click(object sender, EventArgs e)
         {
