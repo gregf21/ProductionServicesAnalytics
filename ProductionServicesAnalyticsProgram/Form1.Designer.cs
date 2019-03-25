@@ -66,7 +66,7 @@
             // 
             // startDate
             // 
-            this.startDate.Location = new System.Drawing.Point(16, 82);
+            this.startDate.Location = new System.Drawing.Point(16, 95);
             this.startDate.Name = "startDate";
             this.startDate.Size = new System.Drawing.Size(307, 26);
             this.startDate.TabIndex = 2;

@@ -36,7 +36,15 @@ namespace ProductionServicesAnalyticsProgram
 
             
         }
-
+        private void shortenArray(ref string[] dataArray)
+        {
+            dataArray[2] = dataArray[2] + " " + dataArray[3];
+            dataArray[3] = dataArray[4];
+            dataArray[4] = dataArray[5];
+            dataArray[5] = dataArray[6];
+            dataArray[6] = dataArray[7];
+            dataArray[7] = "";
+        }
         private void submitButton_Click(object sender, EventArgs e)
         {
 
@@ -113,7 +121,7 @@ namespace ProductionServicesAnalyticsProgram
 
 
             int cMonth = startDate.Value.Month, cDay = startDate.Value.Day, cYear = startDate.Value.Year;
-            for (int dateCounter = (endDate.Value.Date - startDate.Value.Date).Days + 1; dateCounter > 0; dateCounter--)
+            for (int dateCounter = (endDate.Value.Date - startDate.Value.Date).Days+1; dateCounter > 0; dateCounter--)
             {
                 driver.Url = "http://172.21.20.41/cepdotnet/CEPHome.aspx?day=" + cDay + "&month=" + cMonth + "&year=" + cYear;
 
@@ -132,7 +140,19 @@ namespace ProductionServicesAnalyticsProgram
                         //4: end time
                         //5: end time AM/PM
                         tempWorkerDataArray = tempElementArray[i].Split(' ');
+                        if(tempWorkerDataArray.Length > 7)
+                        {
+                            shortenArray(ref tempWorkerDataArray);
+                        }
                         tempStartTime = tempWorkerDataArray[3];
+                       /* while (isDigit == false && tempStartTime != "MIDNIGHT" && tempStartTime != "NOON")
+                        {
+                            char time = tempStartTime[1];
+                            StringBuilder sb = new StringBuilder(tempStartTime);
+                            sb.Remove(0, 1);
+                            tempStartTime = sb.ToString();
+                            isDigit = char.IsDigit(tempStartTime[0]);
+                        }*/
                         if (tempStartTime.Contains("MIDNIGHT") || tempStartTime.Contains("NOON"))
                         {
                             tempEndTime = tempWorkerDataArray[4];
@@ -150,6 +170,15 @@ namespace ProductionServicesAnalyticsProgram
                                 tempEndTime += " " + tempWorkerDataArray[6];
                             }
                         }
+            /*            else
+                        {
+                            tempStartTime += " " + tempWorkerDataArray[5];
+                            tempEndTime = tempWorkerDataArray[6];
+                            if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
+                            {
+                                tempEndTime += " " + tempWorkerDataArray[7];
+                            }
+                        }*/
                         tempTime = findMinutes(tempStartTime, tempEndTime);
 
                         if (analysisTypeCheckBoxList.GetItemChecked(0))
@@ -206,7 +235,6 @@ namespace ProductionServicesAnalyticsProgram
         private void updateButton_Click(object sender, EventArgs e)
         {
             chart1.Series[0].Points.Clear();
-            chart1.ChartAreas[0].AxisX.Minimum = startDate.Value.Day;
             double[] dataArrayForSelectedWorker = null;
             double total = 0;
             grabDataFor(nameListBox.SelectedValue.ToString(), ref dataArrayForSelectedWorker);
@@ -215,7 +243,7 @@ namespace ProductionServicesAnalyticsProgram
 
             /* (analysisTypeCheckBoxList.SelectedIndex == 0)
             {*/
-                int counter = 0;
+                /*int counter = 0;
                 int i = startDate.Value.Day;
                 do
                 {
@@ -226,7 +254,16 @@ namespace ProductionServicesAnalyticsProgram
                     total += dataArrayForSelectedWorker[counter];
                     i++;
                     counter++;
-                } while (counter < dataArrayForSelectedWorker.Length);
+                } while (counter < dataArrayForSelectedWorker.Length);*/
+            for (int i = 0; i < dataArrayForSelectedWorker.Length; i++)
+            {
+                chart1.Series[0].Points.AddXY(i + 1, dataArrayForSelectedWorker[i]);
+                chart1.Series[0].Points[i].MarkerStyle = MarkerStyle.Circle;
+                chart1.Series[0].Points[i].MarkerSize = 10;
+                chart1.Series[0].Points[i].MarkerColor = Color.Blue;
+
+                total += dataArrayForSelectedWorker[i];
+            }
             /*}
             else if (analysisTypeCheckBoxList.SelectedIndex == 1)
             {
@@ -258,7 +295,7 @@ namespace ProductionServicesAnalyticsProgram
         private void Form1_Load(object sender, EventArgs e)
         {
             chart1.Series[0].ChartType = SeriesChartType.Line;
-            chart1.ChartAreas[0].AxisX.IsStartedFromZero = false;
+            chart1.ChartAreas[0].AxisX.IsStartedFromZero = true;
             chart1.ChartAreas[0].AxisY.Title = "Hours";
             chart1.Series[0].LegendText = "Hours Worked";
             String[] lines;
@@ -275,7 +312,6 @@ namespace ProductionServicesAnalyticsProgram
         public int findMinutes(String startTime, String endTime)
         {
             int startHours = 0, startMinutes = 0, endHours = 0, endMinutes = 0;
-
             if (startTime.Contains("NOON"))
             {
                 startHours = 12;
