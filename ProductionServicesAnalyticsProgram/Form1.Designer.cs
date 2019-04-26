@@ -58,6 +58,9 @@
             this.overtimeCheck = new System.Windows.Forms.Button();
             this.hoursCheck = new System.Windows.Forms.Button();
             this.checkerListView = new System.Windows.Forms.ListView();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.percentageLabel = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -265,7 +268,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(2114, 1682);
+            this.label4.Location = new System.Drawing.Point(15, 1673);
             this.label4.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(205, 37);
@@ -306,12 +309,33 @@
             this.checkerListView.TabIndex = 27;
             this.checkerListView.UseCompatibleStateImageBehavior = false;
             // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.BackgroundWorker1_DoWork);
+            // 
+            // progressBar1
+            // 
+            this.progressBar1.Location = new System.Drawing.Point(1911, 1619);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(339, 60);
+            this.progressBar1.TabIndex = 28;
+            // 
+            // percentageLabel
+            // 
+            this.percentageLabel.AutoSize = true;
+            this.percentageLabel.Location = new System.Drawing.Point(1921, 1512);
+            this.percentageLabel.Name = "percentageLabel";
+            this.percentageLabel.Size = new System.Drawing.Size(0, 37);
+            this.percentageLabel.TabIndex = 29;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(19F, 37F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.ClientSize = new System.Drawing.Size(2324, 1719);
+            this.Controls.Add(this.percentageLabel);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.checkerListView);
             this.Controls.Add(this.hoursCheck);
             this.Controls.Add(this.overtimeCheck);
@@ -372,6 +396,9 @@
         private System.Windows.Forms.Button overtimeCheck;
         private System.Windows.Forms.Button hoursCheck;
         private System.Windows.Forms.ListView checkerListView;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.Label percentageLabel;
     }
 }
 

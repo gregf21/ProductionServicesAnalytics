@@ -64,191 +64,17 @@ namespace ProductionServicesAnalyticsProgram
         private void submitButton_Click(object sender, EventArgs e)
         {
 
-            MessageBox.Show("Starting data grab...\nPlease wait for a completion dialog.\nPress OK to begin.");
+            //MessageBox.Show("Starting data grab...\nPlease wait for a completion dialog.\nPress OK to begin.");
+        
+            //execute data grab in background
+            backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(BackgroundWorker1_ProgressChanged);
+            backgroundWorker1.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker1_RunWorkerCompleted);
+            backgroundWorker1.WorkerReportsProgress = true;
 
-            if (usernameBox.Text != "" && passwordBox.Text != "")
-            {
-                System.IO.File.WriteAllLines(@"userData.txt", new string[] { usernameBox.Text, passwordBox.Text });
-            }
+            if(!backgroundWorker1.IsBusy)
+                backgroundWorker1.RunWorkerAsync();
 
-            String user = usernameBox.Text;
-            String pass = passwordBox.Text;
-
-           
-
-            var driverService = ChromeDriverService.CreateDefaultService();
-            driverService.HideCommandPromptWindow = true;
-            ChromeOptions options = new ChromeOptions();
-            options.AddArgument("headless");
-
-            IWebDriver driver = new ChromeDriver(driverService, options);
-            driver.Url = "http://172.21.20.41/cepdotnet/CEPloginToCEP.aspx";
-
-
-
-            IWebElement username = driver.FindElement(By.Id("txtUserName"));
-            IWebElement password = driver.FindElement(By.Id("txtPassword"));
-
-            username.Clear();
-            username.SendKeys(user);
-
-            password.Clear();
-            password.SendKeys(pass);
-
-            IWebElement lgnBtn = driver.FindElement(By.Id("sbtLogin"));
-            lgnBtn.Click();
-
-
-            IReadOnlyCollection<IWebElement> elements;
-            indexByName = new Dictionary<String, int>();
-
-
-            //grab all names and store them in the dictionary
-            int indexForDictionary = 1;
-            indexByName.Add("All", 0);
-
-            driver.Url = "http://172.21.20.41/cepdotnet/CEPemployeeSearch.aspx";
-            elements = driver.FindElements(By.ClassName("CEPSub"));
-            String tempFirstName = "", tempLastName = "", tempElementText;
-
-            foreach (IWebElement element in elements)
-            {
-                if (element.Text.Contains("NoEmail@.xxx"))
-                    break;
-                tempLastName = element.Text.Substring(0, element.Text.IndexOf(",") - 1);
-                tempElementText = element.Text.Substring(tempLastName.Length + 3);
-                tempFirstName = tempElementText.Substring(0, tempElementText.IndexOf(" "));
-                indexByName.Add(tempFirstName + " " + tempLastName, indexForDictionary);
-                indexForDictionary++;
-            }
-
-
-            totalDays = (endDate.Value.Date - startDate.Value.Date).Days + 1;
-            //make the array of minutes per worker
-
-            int dayIndexChange = 0, monthIndexChange = 0, yearIndexChange = 0;
-
-            if (analysisTypeCheckBoxList.GetItemChecked(0))
-            {
-                minutesPerWorkerByDay = new int[indexForDictionary * ((endDate.Value.Date - startDate.Value.Date).Days + 1)];
-            }
-            if (analysisTypeCheckBoxList.GetItemChecked(1))
-            {
-                minutesPerWorkerByMonth = new int[indexForDictionary * ((endDate.Value.Year - startDate.Value.Year) * 12 + (endDate.Value.Month - startDate.Value.Month) + 1)];
-            }
-            if (analysisTypeCheckBoxList.GetItemChecked(2))
-            {
-                minutesPerWorkerByYear = new int[indexForDictionary * ((endDate.Value.Year - startDate.Value.Year) + 1)];
-            }
-            //start analysis by day
-
-            String[] tempElementArray, tempWorkerDataArray;
-            String tempStartTime, tempEndTime;
-
-            int tempTime;
-
-
-            int cMonth = startDate.Value.Month, cDay = startDate.Value.Day, cYear = startDate.Value.Year;
-            for (int dateCounter = (endDate.Value.Date - startDate.Value.Date).Days+1; dateCounter > 0; dateCounter--)
-            {
-                driver.Url = "http://172.21.20.41/cepdotnet/CEPHome.aspx?day=" + cDay + "&month=" + cMonth + "&year=" + cYear;
-
-                //grabs all events for current selected day
-                elements = driver.FindElements(By.ClassName("CEPDaySub"));
-                foreach (IWebElement element in elements)
-                {
-                    //data on individual workers starting at index 3 (inclusive)
-                    tempElementArray = element.Text.Split('\n');
-                    for (int i = 3; i < tempElementArray.Length; i++)
-                    {
-                        //0: first name
-                        //1: last name
-                        //2: start time
-                        //3: start time AM/PM
-                        //4: end time
-                        //5: end time AM/PM
-
-                        
-
-                        tempWorkerDataArray = tempElementArray[i].Split(' ');
-
-
-
-                        if (!checkZStaffOrNeeded(tempWorkerDataArray[2]))
-                        {
-
-                            //The Papera edit
-                            paperaEdit(ref tempWorkerDataArray);
-
-
-                            tempStartTime = tempWorkerDataArray[3];
-
-                            if (tempStartTime.Contains("MIDNIGHT") || tempStartTime.Contains("NOON"))
-                            {
-                                tempEndTime = tempWorkerDataArray[4];
-                                if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
-                                {
-                                    tempEndTime += " " + tempWorkerDataArray[5];
-                                }
-                            }
-                            else
-                            {
-                                tempStartTime += " " + tempWorkerDataArray[4];
-                                tempEndTime = tempWorkerDataArray[5];
-                                if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
-                                {
-                                    tempEndTime += " " + tempWorkerDataArray[6];
-                                }
-                            }
-                            
-                            tempTime = findMinutes(tempStartTime, tempEndTime);
-
-                            if (analysisTypeCheckBoxList.GetItemChecked(0))
-                            {
-                                minutesPerWorkerByDay[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] + (dayIndexChange * indexForDictionary)] += tempTime;
-                                minutesPerWorkerByDay[dayIndexChange * indexByName.Count] += tempTime;
-                            }
-                            if (analysisTypeCheckBoxList.GetItemChecked(1))
-                            {
-                                minutesPerWorkerByMonth[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * (monthIndexChange * indexForDictionary)] += tempTime;
-                                minutesPerWorkerByMonth[monthIndexChange * indexByName.Count] += tempTime;
-                            }
-                            if (analysisTypeCheckBoxList.GetItemChecked(2))
-                            {
-                                minutesPerWorkerByYear[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * (yearIndexChange * indexForDictionary)] += tempTime;
-                                minutesPerWorkerByYear[yearIndexChange * indexByName.Count] += tempTime;
-                            }
-                        }
-                    }
-
-                }
-
-                cDay++;
-                dayIndexChange++;
-                int daysInMonth = System.DateTime.DaysInMonth(cYear, cMonth);
-                if (cDay > daysInMonth)
-                {
-                    cDay = 1;
-                    cMonth++;
-                    monthIndexChange++;
-                    if (cMonth > 12)
-                    {
-                        cMonth = 1;
-                        cYear++;
-                        yearIndexChange++;
-                    }
-
-                }
-
-            }
-            driver.Quit();
-
-
-            //sets up list boxes to current instance
-            analysisTypeListBox.DataSource = analysisTypeCheckBoxList.CheckedItems;
-            nameListBox.DataSource = indexByName.Keys.ToList();
-
-            MessageBox.Show("Data grab is complete!\nPress OK to continue...");
+            //MessageBox.Show("Data grab is complete!\nPress OK to continue...");
 
             
             
@@ -617,6 +443,7 @@ namespace ProductionServicesAnalyticsProgram
             return orderedLToGHourTotal;
         }
 
+
         private void totalWorkerHoursByDay(ref int[] totalHoursPerWorker, int totalDays)
         {
             for (int i = 1; i < indexByName.Count; i++)
@@ -639,6 +466,241 @@ namespace ProductionServicesAnalyticsProgram
             //if not found return nothing
             return "";
         }
+
+
+
+        private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
+        {
+            int progressBarCompletion = 0;
+            backgroundWorker1.ReportProgress(progressBarCompletion);
+
+            if (usernameBox.Text != "" && passwordBox.Text != "")
+            {
+                System.IO.File.WriteAllLines(@"userData.txt", new string[] { usernameBox.Text, passwordBox.Text });
+            }
+
+            String user = usernameBox.Text;
+            String pass = passwordBox.Text;
+
+
+
+            var driverService = ChromeDriverService.CreateDefaultService();
+            driverService.HideCommandPromptWindow = true;
+            ChromeOptions options = new ChromeOptions();
+            options.AddArgument("headless");
+
+            IWebDriver driver = new ChromeDriver(driverService, options);
+            driver.Url = "http://172.21.20.41/cepdotnet/CEPloginToCEP.aspx";
+
+            progressBarCompletion += 5;
+            backgroundWorker1.ReportProgress(progressBarCompletion);
+
+
+
+            IWebElement username = driver.FindElement(By.Id("txtUserName"));
+            IWebElement password = driver.FindElement(By.Id("txtPassword"));
+
+            username.Clear();
+            username.SendKeys(user);
+
+            password.Clear();
+            password.SendKeys(pass);
+
+            IWebElement lgnBtn = driver.FindElement(By.Id("sbtLogin"));
+            lgnBtn.Click();
+
+
+            IReadOnlyCollection<IWebElement> elements;
+            indexByName = new Dictionary<String, int>();
+
+
+            //grab all names and store them in the dictionary
+            int indexForDictionary = 1;
+            indexByName.Add("All", 0);
+
+            driver.Url = "http://172.21.20.41/cepdotnet/CEPemployeeSearch.aspx";
+            elements = driver.FindElements(By.ClassName("CEPSub"));
+            String tempFirstName = "", tempLastName = "", tempElementText;
+
+            foreach (IWebElement element in elements)
+            {
+                if (element.Text.Contains("NoEmail@.xxx"))
+                    break;
+                tempLastName = element.Text.Substring(0, element.Text.IndexOf(",") - 1);
+                tempElementText = element.Text.Substring(tempLastName.Length + 3);
+                tempFirstName = tempElementText.Substring(0, tempElementText.IndexOf(" "));
+                indexByName.Add(tempFirstName + " " + tempLastName, indexForDictionary);
+                indexForDictionary++;
+            }
+
+            progressBarCompletion += 5;
+            backgroundWorker1.ReportProgress(progressBarCompletion);
+
+
+            totalDays = (endDate.Value.Date - startDate.Value.Date).Days + 1;
+
+            double progressBarIncrementCount = 85.0 / totalDays, progressBarIncrement = 0;
+
+          
+            int dayIndexChange = 0, monthIndexChange = 0, yearIndexChange = 0;
+
+            if (analysisTypeCheckBoxList.GetItemChecked(0))
+            {
+                minutesPerWorkerByDay = new int[indexForDictionary * ((endDate.Value.Date - startDate.Value.Date).Days + 1)];
+            }
+            if (analysisTypeCheckBoxList.GetItemChecked(1))
+            {
+                minutesPerWorkerByMonth = new int[indexForDictionary * ((endDate.Value.Year - startDate.Value.Year) * 12 + (endDate.Value.Month - startDate.Value.Month) + 1)];
+            }
+            if (analysisTypeCheckBoxList.GetItemChecked(2))
+            {
+                minutesPerWorkerByYear = new int[indexForDictionary * ((endDate.Value.Year - startDate.Value.Year) + 1)];
+            }
+            //start analysis by day
+
+            String[] tempElementArray, tempWorkerDataArray;
+            String tempStartTime, tempEndTime;
+
+            int tempTime;
+
+
+            int cMonth = startDate.Value.Month, cDay = startDate.Value.Day, cYear = startDate.Value.Year;
+            for (int dateCounter = (endDate.Value.Date - startDate.Value.Date).Days + 1; dateCounter > 0; dateCounter--)
+            {
+                progressBarIncrement += progressBarIncrementCount;
+                progressBarCompletion += (int)progressBarIncrement;
+                if (progressBarIncrement > 1)
+                    progressBarIncrement = 0;
+                if (progressBarCompletion > 95)
+                    progressBarCompletion = 95;
+                if (progressBarCompletion <= 95)
+                    backgroundWorker1.ReportProgress(progressBarCompletion);
+
+
+                driver.Url = "http://172.21.20.41/cepdotnet/CEPHome.aspx?day=" + cDay + "&month=" + cMonth + "&year=" + cYear;
+
+                //grabs all events for current selected day
+                elements = driver.FindElements(By.ClassName("CEPDaySub"));
+                foreach (IWebElement element in elements)
+                {
+                    //data on individual workers starting at index 3 (inclusive)
+                    tempElementArray = element.Text.Split('\n');
+                    for (int i = 3; i < tempElementArray.Length; i++)
+                    {
+                        //0: first name
+                        //1: last name
+                        //2: start time
+                        //3: start time AM/PM
+                        //4: end time
+                        //5: end time AM/PM
+
+
+
+                        tempWorkerDataArray = tempElementArray[i].Split(' ');
+
+
+
+                        if (!checkZStaffOrNeeded(tempWorkerDataArray[2]))
+                        {
+
+                            //The Papera edit
+                            paperaEdit(ref tempWorkerDataArray);
+
+
+                            tempStartTime = tempWorkerDataArray[3];
+
+                            if (tempStartTime.Contains("MIDNIGHT") || tempStartTime.Contains("NOON"))
+                            {
+                                tempEndTime = tempWorkerDataArray[4];
+                                if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
+                                {
+                                    tempEndTime += " " + tempWorkerDataArray[5];
+                                }
+                            }
+                            else
+                            {
+                                tempStartTime += " " + tempWorkerDataArray[4];
+                                tempEndTime = tempWorkerDataArray[5];
+                                if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
+                                {
+                                    tempEndTime += " " + tempWorkerDataArray[6];
+                                }
+                            }
+
+                            tempTime = findMinutes(tempStartTime, tempEndTime);
+
+                            if (analysisTypeCheckBoxList.GetItemChecked(0))
+                            {
+                                minutesPerWorkerByDay[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] + (dayIndexChange * indexForDictionary)] += tempTime;
+                                minutesPerWorkerByDay[dayIndexChange * indexByName.Count] += tempTime;
+                            }
+                            if (analysisTypeCheckBoxList.GetItemChecked(1))
+                            {
+                                minutesPerWorkerByMonth[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * (monthIndexChange * indexForDictionary)] += tempTime;
+                                minutesPerWorkerByMonth[monthIndexChange * indexByName.Count] += tempTime;
+                            }
+                            if (analysisTypeCheckBoxList.GetItemChecked(2))
+                            {
+                                minutesPerWorkerByYear[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * (yearIndexChange * indexForDictionary)] += tempTime;
+                                minutesPerWorkerByYear[yearIndexChange * indexByName.Count] += tempTime;
+                            }
+                        }
+                    }
+
+                }
+
+                cDay++;
+                dayIndexChange++;
+                int daysInMonth = System.DateTime.DaysInMonth(cYear, cMonth);
+                if (cDay > daysInMonth)
+                {
+                    cDay = 1;
+                    cMonth++;
+                    monthIndexChange++;
+                    if (cMonth > 12)
+                    {
+                        cMonth = 1;
+                        cYear++;
+                        yearIndexChange++;
+                    }
+
+                }
+
+            }
+            driver.Quit();
+
+
+            
+
+            //finish up progress bar
+            while (progressBarCompletion < 100)
+            {
+                progressBarCompletion++;
+                backgroundWorker1.ReportProgress(progressBarCompletion);
+            }
+
+            
+
+            
+        }
+
+        private void BackgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            //update progress bar and label
+            progressBar1.Value = e.ProgressPercentage;
+            percentageLabel.Text = "Grabbing data...\n" + e.ProgressPercentage.ToString() + " %";
+        }
+
+        private void BackgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            percentageLabel.Text = "Complete";
+            
+            //sets up list boxes to current instance
+            analysisTypeListBox.DataSource = analysisTypeCheckBoxList.CheckedItems;
+            nameListBox.DataSource = indexByName.Keys.ToList();
+        }
+
+
     }
 
 }
