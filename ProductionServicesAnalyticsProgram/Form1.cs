@@ -81,9 +81,6 @@ namespace ProductionServicesAnalyticsProgram
 
                 //MessageBox.Show("Data grab is complete!\nPress OK to continue...");
 
-
-
-
             }
         }
 
@@ -122,6 +119,13 @@ namespace ProductionServicesAnalyticsProgram
                 if (lines[1] != null)
                     passwordBox.Text = lines[1];
             }
+            ToolTip toolTip1 = new ToolTip();
+            toolTip1.AutoPopDelay = 5000;
+            toolTip1.InitialDelay = 5000;
+            toolTip1.ReshowDelay = 1000;
+            toolTip1.ShowAlways = true;
+            toolTip1.SetToolTip(this.chart1, "Select 'Update Chart' to view data.");
+            toolTip1.SetToolTip(this.nameListBox, "Select a name and press 'Update Chart' to view data.");
         }
 
         public int findMinutes(String startTime, String endTime)
@@ -296,6 +300,7 @@ namespace ProductionServicesAnalyticsProgram
                 //update the current index
                 curIndex += indexByName.Count;
             }
+
 
         }
 
@@ -675,7 +680,7 @@ namespace ProductionServicesAnalyticsProgram
             driver.Quit();
 
 
-            
+
 
             //finish up progress bar
             while (progressBarCompletion < 100)
@@ -694,6 +699,11 @@ namespace ProductionServicesAnalyticsProgram
 
         }
 
+        private void toolTip1_Popup(object sender, PopupEventArgs e)
+        {
+
+        }
+
         private void BackgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             //update progress bar and label
@@ -708,6 +718,7 @@ namespace ProductionServicesAnalyticsProgram
             //sets up list boxes to current instance
             analysisTypeListBox.DataSource = analysisTypeCheckBoxList.CheckedItems;
             nameListBox.DataSource = indexByName.Keys.ToList();
+            updateButton.Visible = true;
         }
 
 
