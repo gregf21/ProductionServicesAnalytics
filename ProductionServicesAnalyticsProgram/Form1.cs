@@ -63,23 +63,28 @@ namespace ProductionServicesAnalyticsProgram
        
         private void submitButton_Click(object sender, EventArgs e)
         {
+            if (analysisTypeCheckBoxList.GetItemChecked(0) == false && analysisTypeCheckBoxList.GetItemChecked(1) == false && analysisTypeCheckBoxList.GetItemChecked(2) == false)
+            {
+                MessageBox.Show("Please check day, month, or year before selecting submit.");
+            }
+            else
+            {
+                //MessageBox.Show("Starting data grab...\nPlease wait for a completion dialog.\nPress OK to begin.");
 
-            //MessageBox.Show("Starting data grab...\nPlease wait for a completion dialog.\nPress OK to begin.");
-        
-            //execute data grab in background
-            backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(BackgroundWorker1_ProgressChanged);
-            backgroundWorker1.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker1_RunWorkerCompleted);
-            backgroundWorker1.WorkerReportsProgress = true;
+                //execute data grab in background
+                backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(BackgroundWorker1_ProgressChanged);
+                backgroundWorker1.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker1_RunWorkerCompleted);
+                backgroundWorker1.WorkerReportsProgress = true;
 
-            if(!backgroundWorker1.IsBusy)
-                backgroundWorker1.RunWorkerAsync();
+                if (!backgroundWorker1.IsBusy)
+                    backgroundWorker1.RunWorkerAsync();
 
-            //MessageBox.Show("Data grab is complete!\nPress OK to continue...");
-
-            
-            
+                //MessageBox.Show("Data grab is complete!\nPress OK to continue...");
 
 
+
+
+            }
         }
 
         private void updateButton_Click(object sender, EventArgs e)
@@ -682,6 +687,11 @@ namespace ProductionServicesAnalyticsProgram
             
 
             
+        }
+
+        private void analysisTypeCheckBoxList_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
 
         private void BackgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
