@@ -26,9 +26,12 @@ namespace ProductionServicesAnalyticsProgram
         //key is index and value is full name separated by a space
         Dictionary<String, int> indexByName;
 
+
         int[] minutesPerWorkerByDay, minutesPerWorkerByMonth, minutesPerWorkerByYear;
 
-        
+        int totalDays;
+
+
 
         public Form1()
         {
@@ -36,15 +39,37 @@ namespace ProductionServicesAnalyticsProgram
 
             
         }
-        private void shortenArray(ref string[] dataArray)
+        private void paperaEdit(ref string[] dataArray)
         {
-            dataArray[2] = dataArray[2] + " " + dataArray[3];
+            if (dataArray[3].Contains("I") || dataArray[3].Contains("V") || dataArray[3].Contains("X"))
+            {
+                dataArray[2] += " " + dataArray[3];
+                for(int i = 3; i < dataArray.Length - 1; i++)
+                {
+                    dataArray[i] = dataArray[i + 1];
+                }
+            }
+        }
+        
+        private bool checkZStaffOrNeeded(string data)
+        {
+            if (data.Contains("Z-Staff") || data.Contains("Z-NEEDED") || data.Contains("Person"))
+                return true;
+            else
+                return false;
+        }
+
+        
+
+        /*private void shortenArray(ref string[] dataArray)
+        {
+            dataArray[1] += " " + dataArray[2];
+            dataArray[2] = dataArray[3];
             dataArray[3] = dataArray[4];
             dataArray[4] = dataArray[5];
             dataArray[5] = dataArray[6];
-            dataArray[6] = dataArray[7];
-            dataArray[7] = "";
-        }
+            dataArray[6] = "";
+        }*/
         private void submitButton_Click(object sender, EventArgs e)
         {
 
@@ -95,7 +120,7 @@ namespace ProductionServicesAnalyticsProgram
             }
 
 
-
+            totalDays = (endDate.Value.Date - startDate.Value.Date).Days + 1;
             //make the array of minutes per worker
 
             int dayIndexChange = 0, monthIndexChange = 0, yearIndexChange = 0;
@@ -139,62 +164,74 @@ namespace ProductionServicesAnalyticsProgram
                         //3: start time AM/PM
                         //4: end time
                         //5: end time AM/PM
-                        tempWorkerDataArray = tempElementArray[i].Split(' ');
-                        if(tempWorkerDataArray.Length > 7)
-                        {
-                            shortenArray(ref tempWorkerDataArray);
-                        }
-                        tempStartTime = tempWorkerDataArray[3];
-                       /* while (isDigit == false && tempStartTime != "MIDNIGHT" && tempStartTime != "NOON")
-                        {
-                            char time = tempStartTime[1];
-                            StringBuilder sb = new StringBuilder(tempStartTime);
-                            sb.Remove(0, 1);
-                            tempStartTime = sb.ToString();
-                            isDigit = char.IsDigit(tempStartTime[0]);
-                        }*/
-                        if (tempStartTime.Contains("MIDNIGHT") || tempStartTime.Contains("NOON"))
-                        {
-                            tempEndTime = tempWorkerDataArray[4];
-                            if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
-                            {
-                                tempEndTime += " " + tempWorkerDataArray[5];
-                            }
-                        }
-                        else
-                        {
-                            tempStartTime += " " + tempWorkerDataArray[4];
-                            tempEndTime = tempWorkerDataArray[5];
-                            if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
-                            {
-                                tempEndTime += " " + tempWorkerDataArray[6];
-                            }
-                        }
-            /*            else
-                        {
-                            tempStartTime += " " + tempWorkerDataArray[5];
-                            tempEndTime = tempWorkerDataArray[6];
-                            if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
-                            {
-                                tempEndTime += " " + tempWorkerDataArray[7];
-                            }
-                        }*/
-                        tempTime = findMinutes(tempStartTime, tempEndTime);
 
-                        if (analysisTypeCheckBoxList.GetItemChecked(0))
+                        
+
+                        tempWorkerDataArray = tempElementArray[i].Split(' ');
+
+
+
+                        if (!checkZStaffOrNeeded(tempWorkerDataArray[2]))
                         {
-                            minutesPerWorkerByDay[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] + (dayIndexChange * indexForDictionary)] += tempTime;
-                            minutesPerWorkerByDay[dayIndexChange * indexByName.Count] += tempTime;
-                        }
-                        if (analysisTypeCheckBoxList.GetItemChecked(1))
-                        {
-                            minutesPerWorkerByMonth[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * (monthIndexChange * indexForDictionary)] += tempTime;
-                            minutesPerWorkerByMonth[monthIndexChange * indexByName.Count] += tempTime;
-                        }
-                        if (analysisTypeCheckBoxList.GetItemChecked(2))
-                        {
-                            minutesPerWorkerByYear[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * (yearIndexChange * indexForDictionary)] += tempTime;
-                            minutesPerWorkerByYear[yearIndexChange * indexByName.Count] += tempTime;
+
+                            //The Papera edit
+
+
+                            paperaEdit(ref tempWorkerDataArray);
+
+
+                            tempStartTime = tempWorkerDataArray[3];
+                            /* while (isDigit == false && tempStartTime != "MIDNIGHT" && tempStartTime != "NOON")
+                             {
+                                 char time = tempStartTime[1];
+                                 StringBuilder sb = new StringBuilder(tempStartTime);
+                                 sb.Remove(0, 1);
+                                 tempStartTime = sb.ToString();
+                                 isDigit = char.IsDigit(tempStartTime[0]);
+                             }*/
+                            if (tempStartTime.Contains("MIDNIGHT") || tempStartTime.Contains("NOON"))
+                            {
+                                tempEndTime = tempWorkerDataArray[4];
+                                if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
+                                {
+                                    tempEndTime += " " + tempWorkerDataArray[5];
+                                }
+                            }
+                            else
+                            {
+                                tempStartTime += " " + tempWorkerDataArray[4];
+                                tempEndTime = tempWorkerDataArray[5];
+                                if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
+                                {
+                                    tempEndTime += " " + tempWorkerDataArray[6];
+                                }
+                            }
+                            /*            else
+                                        {
+                                            tempStartTime += " " + tempWorkerDataArray[5];
+                                            tempEndTime = tempWorkerDataArray[6];
+                                            if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
+                                            {
+                                                tempEndTime += " " + tempWorkerDataArray[7];
+                                            }
+                                        }*/
+                            tempTime = findMinutes(tempStartTime, tempEndTime);
+
+                            if (analysisTypeCheckBoxList.GetItemChecked(0))
+                            {
+                                minutesPerWorkerByDay[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] + (dayIndexChange * indexForDictionary)] += tempTime;
+                                minutesPerWorkerByDay[dayIndexChange * indexByName.Count] += tempTime;
+                            }
+                            if (analysisTypeCheckBoxList.GetItemChecked(1))
+                            {
+                                minutesPerWorkerByMonth[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * (monthIndexChange * indexForDictionary)] += tempTime;
+                                minutesPerWorkerByMonth[monthIndexChange * indexByName.Count] += tempTime;
+                            }
+                            if (analysisTypeCheckBoxList.GetItemChecked(2))
+                            {
+                                minutesPerWorkerByYear[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * (yearIndexChange * indexForDictionary)] += tempTime;
+                                minutesPerWorkerByYear[yearIndexChange * indexByName.Count] += tempTime;
+                            }
                         }
                     }
 
@@ -225,10 +262,9 @@ namespace ProductionServicesAnalyticsProgram
             analysisTypeListBox.DataSource = analysisTypeCheckBoxList.CheckedItems;
             nameListBox.DataSource = indexByName.Keys.ToList();
 
-
-            //do grab index by name
-            //indexByName.FirstOrDefault(x => x.Value == i).Key + " - " + i + " : " + minutesPerWorker[i]
             
+            
+
 
         }
 
@@ -530,5 +566,200 @@ namespace ProductionServicesAnalyticsProgram
             }
 
         }
+
+        //returns a set of ints representing order from greatest to least of indexes of names
+        private int[] findOverLimit(int totalDays)
+        {
+            int[] totalHoursPerWorker = new int[indexByName.Count - 1], tempOverWorkers = new int[indexByName.Count - 1], overWorkers;
+            int totalOver = 0;
+
+            totalWorkerHoursByDay(ref totalHoursPerWorker, totalDays);
+
+            //check for how many are over the limit
+            for(int j = 0; j < totalHoursPerWorker.Length; j++)
+            {
+                if (totalHoursPerWorker[j] >= 40 * 60)
+                {
+                    tempOverWorkers[j] = j;
+                    totalOver++;
+                }
+                else
+                {
+                    tempOverWorkers[j] = -1;
+                }
+                  
+            }
+
+            overWorkers = new int[totalOver];
+
+            for(int r = 0; r < tempOverWorkers.Length; r++)
+            {
+                if (tempOverWorkers[r] != -1)
+                {
+                    overWorkers[totalOver - 1] = r + 1;
+                    totalOver--;
+                }
+            }
+
+            return overWorkers;
+        }
+
+        private void HoursCheck_Click(object sender, EventArgs e)
+        {
+            if (totalDays == 7 && analysisTypeCheckBoxList.GetItemChecked(0))
+            {
+                checkerListView.Clear();
+                checkerListView.Scrollable = true;
+                checkerListView.View = View.Details;
+
+                checkerListView.Columns.Add("Name");
+                checkerListView.Columns.Add("Hours Needed");
+
+                int[] tempWorkers = orderByHoursNeeded(totalDays), tempHours = new int[indexByName.Count - 1];
+                totalWorkerHoursByDay(ref tempHours, totalDays);
+                string[] names = new string[tempWorkers.Length], hours = new string[tempHours.Length];
+
+
+                double temp;
+
+                for (int i = 0; i < tempWorkers.Length; i++)
+                {
+
+                    checkerListView.Items.Add(getKeyByValue(tempWorkers[i]));
+
+                    temp = (double)(tempHours[tempWorkers[i] - 1] / 60);
+                    if (temp > 8)
+                    {
+                        temp = 0;
+                    }
+                    else
+                    {
+                        temp = 8 - temp;
+                    }
+                    checkerListView.Items[i].SubItems.Add(temp.ToString("0.##"));
+                }
+                checkerListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                checkerListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                checkerListView.GridLines = true;
+            }
+            else
+            {
+                MessageBox.Show("To use this feature follow the steps below:\n-Select a one week period\n-Ensure that Day is selected for analysis type\n-Click submit to update the software", "Invalid Request", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void OvertimeCheck_Click(object sender, EventArgs e)
+        {
+            if (totalDays == 7 && analysisTypeCheckBoxList.GetItemChecked(0))
+            {
+
+                checkerListView.Clear();
+                checkerListView.Scrollable = true;
+                checkerListView.View = View.Details;
+
+                checkerListView.Columns.Add("Name");
+                checkerListView.Columns.Add("Total Hours");
+
+                int[] overWorkers = findOverLimit(totalDays), totalHours = new int[indexByName.Count - 1];
+                totalWorkerHoursByDay(ref totalHours, totalDays);
+                double temp;
+
+                for (int i = 0; i < overWorkers.Length; i++)
+                {
+
+                    checkerListView.Items.Add(getKeyByValue(overWorkers[i]));
+
+                    temp = (double)(totalHours[overWorkers[i] - 1] / 60);
+
+                    checkerListView.Items[i].SubItems.Add(temp.ToString("0.##"));
+                }
+
+                checkerListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
+                checkerListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
+                checkerListView.GridLines = true;
+            }
+            else
+            {
+                MessageBox.Show("To use this feature follow the steps below:\n-Select a one week period\n-Ensure that Day is selected for analysis type\n-Click submit to update the software", "Invalid Request", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private int[] orderByHoursNeeded(int totalDays)
+        {
+            int[] totalHoursPerWorker = new int[indexByName.Count - 1], orderedLToGHourTotal = new int[indexByName.Count - 1];
+            totalWorkerHoursByDay(ref totalHoursPerWorker, totalDays);
+            int tempMinIndex, orderedArrayIndex = 0;
+            //orderedLToGHourTotal = totalHoursPerWorker;
+
+            for (int i = 0; i < totalHoursPerWorker.Length; i++)
+            {
+                tempMinIndex = totalHoursPerWorker.Length - 1;
+                for (int j = 0; j < totalHoursPerWorker.Length; j++)
+                {
+                    if(totalHoursPerWorker[j] != -1)
+                    {
+                        tempMinIndex = j;
+                        break;
+                    }
+                }
+
+                for (int k = 0; k < totalHoursPerWorker.Length; k++)
+                {
+                    if (totalHoursPerWorker[tempMinIndex] > totalHoursPerWorker[k] && totalHoursPerWorker[k] != -1)
+                        tempMinIndex = k;
+
+                    //if (orderedLToGHourTotal[tempMinIndex] > orderedLToGHourTotal[k])
+                    //{
+                     //   tempMinIndex = k;
+                    //}
+                }
+                totalHoursPerWorker[tempMinIndex] = -1;
+                //totalHoursPerWorker[i] = totalHoursPerWorker[tempMinIndex];
+                //totalHoursPerWorker[tempMinIndex] = temp;
+                //orderedLToGHourTotal[tempMinIndex] = orderedLToGHourTotal[orderedArrayIndex];
+
+                orderedLToGHourTotal[orderedArrayIndex] = tempMinIndex + 1;
+                orderedArrayIndex++;
+            }
+            return orderedLToGHourTotal;
+        }
+
+        /*private void sortGeatestToLeastHours(ref int[] workerIndex)
+        {
+            int[] tempArray = workerIndex;
+            for (int i = 0; i < tempArray.Length; i++)
+            {
+                for (int k = 0; k < tempArray.Length; k++)
+                {
+                    if (tempArray[i] > tempArray[Ja)
+
+
+
+                }
+            }
+
+        }*/
+
+        private void totalWorkerHoursByDay(ref int[] totalHoursPerWorker, int totalDays)
+        {
+            for (int i = 1; i < indexByName.Count; i++)
+            {
+                for (int k = 0; k < totalDays; k++)
+                {
+                    totalHoursPerWorker[i - 1] += minutesPerWorkerByDay[i + (k * indexByName.Count)];
+                }
+            }
+        }
+            
+        private string getKeyByValue(int value)
+        {
+            foreach(String name in indexByName.Keys)
+            {
+                if (indexByName[name] == value)
+                    return name;
+            }
+            return "";
+        }
     }
+
 }
