@@ -64,7 +64,7 @@
             // submitButton
             // 
             this.submitButton.Location = new System.Drawing.Point(695, 152);
-            this.submitButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.submitButton.Margin = new System.Windows.Forms.Padding(6);
             this.submitButton.Name = "submitButton";
             this.submitButton.Size = new System.Drawing.Size(369, 168);
             this.submitButton.TabIndex = 0;
@@ -75,7 +75,7 @@
             // startDate
             // 
             this.startDate.Location = new System.Drawing.Point(34, 176);
-            this.startDate.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.startDate.Margin = new System.Windows.Forms.Padding(6);
             this.startDate.Name = "startDate";
             this.startDate.Size = new System.Drawing.Size(644, 44);
             this.startDate.TabIndex = 2;
@@ -83,7 +83,7 @@
             // endDate
             // 
             this.endDate.Location = new System.Drawing.Point(34, 272);
-            this.endDate.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.endDate.Margin = new System.Windows.Forms.Padding(6);
             this.endDate.Name = "endDate";
             this.endDate.Size = new System.Drawing.Size(644, 44);
             this.endDate.TabIndex = 3;
@@ -124,7 +124,7 @@
             this.analysisTypeListBox.FormattingEnabled = true;
             this.analysisTypeListBox.ItemHeight = 37;
             this.analysisTypeListBox.Location = new System.Drawing.Point(42, 579);
-            this.analysisTypeListBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.analysisTypeListBox.Margin = new System.Windows.Forms.Padding(6);
             this.analysisTypeListBox.Name = "analysisTypeListBox";
             this.analysisTypeListBox.Size = new System.Drawing.Size(511, 152);
             this.analysisTypeListBox.TabIndex = 10;
@@ -134,7 +134,7 @@
             this.nameListBox.FormattingEnabled = true;
             this.nameListBox.ItemHeight = 37;
             this.nameListBox.Location = new System.Drawing.Point(42, 746);
-            this.nameListBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.nameListBox.Margin = new System.Windows.Forms.Padding(6);
             this.nameListBox.Name = "nameListBox";
             this.nameListBox.Size = new System.Drawing.Size(511, 337);
             this.nameListBox.TabIndex = 11;
@@ -146,7 +146,7 @@
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(570, 348);
-            this.chart1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.chart1.Margin = new System.Windows.Forms.Padding(6);
             this.chart1.Name = "chart1";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
@@ -165,7 +165,7 @@
             "Month",
             "Year"});
             this.analysisTypeCheckBoxList.Location = new System.Drawing.Point(42, 407);
-            this.analysisTypeCheckBoxList.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.analysisTypeCheckBoxList.Margin = new System.Windows.Forms.Padding(6);
             this.analysisTypeCheckBoxList.Name = "analysisTypeCheckBoxList";
             this.analysisTypeCheckBoxList.Size = new System.Drawing.Size(511, 121);
             this.analysisTypeCheckBoxList.TabIndex = 13;
@@ -173,7 +173,7 @@
             // updateButton
             // 
             this.updateButton.Location = new System.Drawing.Point(1077, 152);
-            this.updateButton.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.updateButton.Margin = new System.Windows.Forms.Padding(6);
             this.updateButton.Name = "updateButton";
             this.updateButton.Size = new System.Drawing.Size(369, 168);
             this.updateButton.TabIndex = 14;
@@ -206,7 +206,7 @@
             // usernameBox
             // 
             this.usernameBox.Location = new System.Drawing.Point(1699, 189);
-            this.usernameBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.usernameBox.Margin = new System.Windows.Forms.Padding(6);
             this.usernameBox.Name = "usernameBox";
             this.usernameBox.Size = new System.Drawing.Size(487, 44);
             this.usernameBox.TabIndex = 17;
@@ -214,7 +214,7 @@
             // passwordBox
             // 
             this.passwordBox.Location = new System.Drawing.Point(1699, 248);
-            this.passwordBox.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.passwordBox.Margin = new System.Windows.Forms.Padding(6);
             this.passwordBox.Name = "passwordBox";
             this.passwordBox.Size = new System.Drawing.Size(487, 44);
             this.passwordBox.TabIndex = 18;
@@ -243,7 +243,7 @@
             // excelExport
             // 
             this.excelExport.Location = new System.Drawing.Point(42, 1097);
-            this.excelExport.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.excelExport.Margin = new System.Windows.Forms.Padding(6);
             this.excelExport.Name = "excelExport";
             this.excelExport.Size = new System.Drawing.Size(515, 98);
             this.excelExport.TabIndex = 21;
@@ -254,7 +254,7 @@
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(570, 1097);
-            this.button1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.button1.Margin = new System.Windows.Forms.Padding(6);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(300, 98);
             this.button1.TabIndex = 22;
@@ -336,7 +336,7 @@
             this.Controls.Add(this.startDate);
             this.Controls.Add(this.submitButton);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "Form1";
             this.Text = "Production Services Analytics";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;

@@ -15,6 +15,7 @@ using System.IO;
 using System.Diagnostics;
 using System.Globalization;
 
+
 namespace ProductionServicesAnalyticsProgram
 {
     public partial class Form1 : Form
@@ -63,6 +64,8 @@ namespace ProductionServicesAnalyticsProgram
         private void submitButton_Click(object sender, EventArgs e)
         {
 
+            MessageBox.Show("Starting data grab...\nPlease wait for a completion dialog.\nPress OK to begin.");
+
             if (usernameBox.Text != "" && passwordBox.Text != "")
             {
                 System.IO.File.WriteAllLines(@"userData.txt", new string[] { usernameBox.Text, passwordBox.Text });
@@ -70,8 +73,18 @@ namespace ProductionServicesAnalyticsProgram
 
             String user = usernameBox.Text;
             String pass = passwordBox.Text;
-            IWebDriver driver = new ChromeDriver();
+
+           
+
+            var driverService = ChromeDriverService.CreateDefaultService();
+            driverService.HideCommandPromptWindow = true;
+            ChromeOptions options = new ChromeOptions();
+            options.AddArgument("headless");
+
+            IWebDriver driver = new ChromeDriver(driverService, options);
             driver.Url = "http://172.21.20.41/cepdotnet/CEPloginToCEP.aspx";
+
+
 
             IWebElement username = driver.FindElement(By.Id("txtUserName"));
             IWebElement password = driver.FindElement(By.Id("txtPassword"));
@@ -234,6 +247,8 @@ namespace ProductionServicesAnalyticsProgram
             //sets up list boxes to current instance
             analysisTypeListBox.DataSource = analysisTypeCheckBoxList.CheckedItems;
             nameListBox.DataSource = indexByName.Keys.ToList();
+
+            MessageBox.Show("Data grab is complete!\nPress OK to continue...");
 
             
             
@@ -627,3 +642,4 @@ namespace ProductionServicesAnalyticsProgram
     }
 
 }
+
