@@ -677,6 +677,7 @@ namespace ProductionServicesAnalyticsProgram
                 }
 
             }
+
             driver.Quit();
 
 
@@ -719,6 +720,7 @@ namespace ProductionServicesAnalyticsProgram
             analysisTypeListBox.DataSource = analysisTypeCheckBoxList.CheckedItems;
             nameListBox.DataSource = indexByName.Keys.ToList();
             updateButton.Visible = true;
+            updateButton.PerformClick();
         }
 
 

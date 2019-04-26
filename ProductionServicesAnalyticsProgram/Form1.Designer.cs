@@ -70,7 +70,7 @@
             // submitButton
             // 
             this.submitButton.Location = new System.Drawing.Point(219, 53);
-            this.submitButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.submitButton.Margin = new System.Windows.Forms.Padding(2);
             this.submitButton.Name = "submitButton";
             this.submitButton.Size = new System.Drawing.Size(117, 59);
             this.submitButton.TabIndex = 0;
@@ -81,15 +81,15 @@
             // startDate
             // 
             this.startDate.Location = new System.Drawing.Point(11, 62);
-            this.startDate.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.startDate.Margin = new System.Windows.Forms.Padding(2);
             this.startDate.Name = "startDate";
             this.startDate.Size = new System.Drawing.Size(206, 20);
             this.startDate.TabIndex = 2;
             // 
             // endDate
             // 
-            this.endDate.Location = new System.Drawing.Point(11, 96);
-            this.endDate.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.endDate.Location = new System.Drawing.Point(11, 100);
+            this.endDate.Margin = new System.Windows.Forms.Padding(2);
             this.endDate.Name = "endDate";
             this.endDate.Size = new System.Drawing.Size(206, 20);
             this.endDate.TabIndex = 3;
@@ -107,7 +107,7 @@
             // endDateLabel
             // 
             this.endDateLabel.AutoSize = true;
-            this.endDateLabel.Location = new System.Drawing.Point(11, 81);
+            this.endDateLabel.Location = new System.Drawing.Point(10, 84);
             this.endDateLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.endDateLabel.Name = "endDateLabel";
             this.endDateLabel.Size = new System.Drawing.Size(52, 13);
@@ -129,7 +129,7 @@
             // 
             this.analysisTypeListBox.FormattingEnabled = true;
             this.analysisTypeListBox.Location = new System.Drawing.Point(13, 203);
-            this.analysisTypeListBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.analysisTypeListBox.Margin = new System.Windows.Forms.Padding(2);
             this.analysisTypeListBox.Name = "analysisTypeListBox";
             this.analysisTypeListBox.Size = new System.Drawing.Size(164, 56);
             this.analysisTypeListBox.TabIndex = 10;
@@ -138,7 +138,7 @@
             // 
             this.nameListBox.FormattingEnabled = true;
             this.nameListBox.Location = new System.Drawing.Point(13, 262);
-            this.nameListBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.nameListBox.Margin = new System.Windows.Forms.Padding(2);
             this.nameListBox.Name = "nameListBox";
             this.nameListBox.Size = new System.Drawing.Size(164, 121);
             this.nameListBox.TabIndex = 11;
@@ -150,7 +150,7 @@
             legend1.Name = "Legend1";
             this.chart1.Legends.Add(legend1);
             this.chart1.Location = new System.Drawing.Point(180, 122);
-            this.chart1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.chart1.Margin = new System.Windows.Forms.Padding(2);
             this.chart1.Name = "chart1";
             series1.ChartArea = "ChartArea1";
             series1.Legend = "Legend1";
@@ -169,7 +169,7 @@
             "Month",
             "Year"});
             this.analysisTypeCheckBoxList.Location = new System.Drawing.Point(13, 143);
-            this.analysisTypeCheckBoxList.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.analysisTypeCheckBoxList.Margin = new System.Windows.Forms.Padding(2);
             this.analysisTypeCheckBoxList.Name = "analysisTypeCheckBoxList";
             this.analysisTypeCheckBoxList.Size = new System.Drawing.Size(164, 49);
             this.analysisTypeCheckBoxList.TabIndex = 13;
@@ -178,7 +178,7 @@
             // updateButton
             // 
             this.updateButton.Location = new System.Drawing.Point(340, 53);
-            this.updateButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.updateButton.Margin = new System.Windows.Forms.Padding(2);
             this.updateButton.Name = "updateButton";
             this.updateButton.Size = new System.Drawing.Size(117, 59);
             this.updateButton.TabIndex = 14;
@@ -212,7 +212,7 @@
             // usernameBox
             // 
             this.usernameBox.Location = new System.Drawing.Point(537, 66);
-            this.usernameBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.usernameBox.Margin = new System.Windows.Forms.Padding(2);
             this.usernameBox.Name = "usernameBox";
             this.usernameBox.Size = new System.Drawing.Size(157, 20);
             this.usernameBox.TabIndex = 17;
@@ -220,7 +220,7 @@
             // passwordBox
             // 
             this.passwordBox.Location = new System.Drawing.Point(537, 87);
-            this.passwordBox.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.passwordBox.Margin = new System.Windows.Forms.Padding(2);
             this.passwordBox.Name = "passwordBox";
             this.passwordBox.Size = new System.Drawing.Size(157, 20);
             this.passwordBox.TabIndex = 18;
@@ -249,7 +249,7 @@
             // excelExport
             // 
             this.excelExport.Location = new System.Drawing.Point(13, 385);
-            this.excelExport.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.excelExport.Margin = new System.Windows.Forms.Padding(2);
             this.excelExport.Name = "excelExport";
             this.excelExport.Size = new System.Drawing.Size(163, 34);
             this.excelExport.TabIndex = 21;
@@ -260,7 +260,7 @@
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(180, 385);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(95, 34);
             this.button1.TabIndex = 22;
@@ -281,7 +281,7 @@
             // overtimeCheck
             // 
             this.overtimeCheck.Location = new System.Drawing.Point(720, 339);
-            this.overtimeCheck.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.overtimeCheck.Margin = new System.Windows.Forms.Padding(1);
             this.overtimeCheck.Name = "overtimeCheck";
             this.overtimeCheck.Size = new System.Drawing.Size(128, 42);
             this.overtimeCheck.TabIndex = 25;
@@ -292,7 +292,7 @@
             // hoursCheck
             // 
             this.hoursCheck.Location = new System.Drawing.Point(857, 339);
-            this.hoursCheck.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.hoursCheck.Margin = new System.Windows.Forms.Padding(1);
             this.hoursCheck.Name = "hoursCheck";
             this.hoursCheck.Size = new System.Drawing.Size(128, 42);
             this.hoursCheck.TabIndex = 26;
@@ -309,7 +309,7 @@
             listViewItem2,
             listViewItem3});
             this.checkerListView.Location = new System.Drawing.Point(720, 122);
-            this.checkerListView.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.checkerListView.Margin = new System.Windows.Forms.Padding(1);
             this.checkerListView.Name = "checkerListView";
             this.checkerListView.Size = new System.Drawing.Size(267, 216);
             this.checkerListView.TabIndex = 27;
@@ -322,7 +322,7 @@
             // progressBar1
             // 
             this.progressBar1.Location = new System.Drawing.Point(720, 99);
-            this.progressBar1.Margin = new System.Windows.Forms.Padding(1, 1, 1, 1);
+            this.progressBar1.Margin = new System.Windows.Forms.Padding(1);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(265, 21);
             this.progressBar1.TabIndex = 28;
@@ -385,7 +385,7 @@
             this.Controls.Add(this.startDate);
             this.Controls.Add(this.submitButton);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "Form1";
             this.Text = "Production Services Analytics";
             this.Load += new System.EventHandler(this.Form1_Load);
