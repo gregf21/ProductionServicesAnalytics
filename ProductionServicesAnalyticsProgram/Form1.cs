@@ -59,17 +59,7 @@ namespace ProductionServicesAnalyticsProgram
                 return false;
         }
 
-        
-
-        /*private void shortenArray(ref string[] dataArray)
-        {
-            dataArray[1] += " " + dataArray[2];
-            dataArray[2] = dataArray[3];
-            dataArray[3] = dataArray[4];
-            dataArray[4] = dataArray[5];
-            dataArray[5] = dataArray[6];
-            dataArray[6] = "";
-        }*/
+       
         private void submitButton_Click(object sender, EventArgs e)
         {
 
@@ -175,20 +165,11 @@ namespace ProductionServicesAnalyticsProgram
                         {
 
                             //The Papera edit
-
-
                             paperaEdit(ref tempWorkerDataArray);
 
 
                             tempStartTime = tempWorkerDataArray[3];
-                            /* while (isDigit == false && tempStartTime != "MIDNIGHT" && tempStartTime != "NOON")
-                             {
-                                 char time = tempStartTime[1];
-                                 StringBuilder sb = new StringBuilder(tempStartTime);
-                                 sb.Remove(0, 1);
-                                 tempStartTime = sb.ToString();
-                                 isDigit = char.IsDigit(tempStartTime[0]);
-                             }*/
+
                             if (tempStartTime.Contains("MIDNIGHT") || tempStartTime.Contains("NOON"))
                             {
                                 tempEndTime = tempWorkerDataArray[4];
@@ -206,15 +187,7 @@ namespace ProductionServicesAnalyticsProgram
                                     tempEndTime += " " + tempWorkerDataArray[6];
                                 }
                             }
-                            /*            else
-                                        {
-                                            tempStartTime += " " + tempWorkerDataArray[5];
-                                            tempEndTime = tempWorkerDataArray[6];
-                                            if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
-                                            {
-                                                tempEndTime += " " + tempWorkerDataArray[7];
-                                            }
-                                        }*/
+                            
                             tempTime = findMinutes(tempStartTime, tempEndTime);
 
                             if (analysisTypeCheckBoxList.GetItemChecked(0))
@@ -275,22 +248,6 @@ namespace ProductionServicesAnalyticsProgram
             double total = 0;
             grabDataFor(nameListBox.SelectedValue.ToString(), ref dataArrayForSelectedWorker);
 
-            //loop through data and output to graph
-
-            /* (analysisTypeCheckBoxList.SelectedIndex == 0)
-            {*/
-                /*int counter = 0;
-                int i = startDate.Value.Day;
-                do
-                {
-                    chart1.Series[0].Points.AddXY(i, dataArrayForSelectedWorker[counter]);
-                    chart1.Series[0].Points[counter].MarkerStyle = MarkerStyle.Circle;
-                    chart1.Series[0].Points[counter].MarkerSize = 10;
-                    chart1.Series[0].Points[counter].MarkerColor = Color.Blue;
-                    total += dataArrayForSelectedWorker[counter];
-                    i++;
-                    counter++;
-                } while (counter < dataArrayForSelectedWorker.Length);*/
             for (int i = 0; i < dataArrayForSelectedWorker.Length; i++)
             {
                 chart1.Series[0].Points.AddXY(i + 1, dataArrayForSelectedWorker[i]);
@@ -300,31 +257,7 @@ namespace ProductionServicesAnalyticsProgram
 
                 total += dataArrayForSelectedWorker[i];
             }
-            /*}
-            else if (analysisTypeCheckBoxList.SelectedIndex == 1)
-            {
-                 for (int i = 0; i < dataArrayForSelectedWorker.Length; i++)
-                 {
-                     chart1.Series[0].Points.AddXY(i+1, dataArrayForSelectedWorker[i]);
-                     chart1.Series[0].Points[i].MarkerStyle = MarkerStyle.Circle;
-                     chart1.Series[0].Points[i].MarkerSize = 10;
-                     chart1.Series[0].Points[i].MarkerColor = Color.Blue;
-
-                     total += dataArrayForSelectedWorker[i];
-                 }
-            }
-            else if (analysisTypeCheckBoxList.SelectedIndex == 2)
-            {
-                for (int i = 0; i < dataArrayForSelectedWorker.Length; i++)
-                {
-                    chart1.Series[0].Points.AddXY(i + 1, dataArrayForSelectedWorker[i]);
-                    chart1.Series[0].Points[i].MarkerStyle = MarkerStyle.Circle;
-                    chart1.Series[0].Points[i].MarkerSize = 10;
-                    chart1.Series[0].Points[i].MarkerColor = Color.Blue;
-
-                    total += dataArrayForSelectedWorker[i];
-                }
-            }*/
+            
             totalHoursLabel.Text = "Total Hours: " + total;
         }
 
@@ -379,7 +312,6 @@ namespace ProductionServicesAnalyticsProgram
             else
             {
 
-                
 
                 endHours = Convert.ToInt32(endTime.Substring(0, endTime.IndexOf(':')));
                 endMinutes = Convert.ToInt32(endTime.Substring(endTime.IndexOf(':') + 1, 2));
@@ -399,41 +331,6 @@ namespace ProductionServicesAnalyticsProgram
             }
             //returns for calulated amount of minutes
             return endMinutes - startMinutes; 
-        }
-
-        private void chart1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void filter_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void analysisTypeCheckBoxList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void analysisTypeListBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void startDate_ValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void excelExport_Click(object sender, EventArgs e)
@@ -504,17 +401,6 @@ namespace ProductionServicesAnalyticsProgram
                 "To update the chart to the selected person's data, press update chart.\n\n\n" +
                 "Created by Greg Fairbanks and Matthew Bocharnikov.\n\n" +
                 "For use at Virginia Tech Production Services.");
-        }
-
-        private void totalHoursLabel_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        //for testing methods and functionality of specific lines
-        private void debugButton_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void grabDataFor(String name, ref double[] dataArray)
@@ -707,38 +593,14 @@ namespace ProductionServicesAnalyticsProgram
                 {
                     if (totalHoursPerWorker[tempMinIndex] > totalHoursPerWorker[k] && totalHoursPerWorker[k] != -1)
                         tempMinIndex = k;
-
-                    //if (orderedLToGHourTotal[tempMinIndex] > orderedLToGHourTotal[k])
-                    //{
-                     //   tempMinIndex = k;
-                    //}
                 }
                 totalHoursPerWorker[tempMinIndex] = -1;
-                //totalHoursPerWorker[i] = totalHoursPerWorker[tempMinIndex];
-                //totalHoursPerWorker[tempMinIndex] = temp;
-                //orderedLToGHourTotal[tempMinIndex] = orderedLToGHourTotal[orderedArrayIndex];
 
                 orderedLToGHourTotal[orderedArrayIndex] = tempMinIndex + 1;
                 orderedArrayIndex++;
             }
             return orderedLToGHourTotal;
         }
-
-        /*private void sortGeatestToLeastHours(ref int[] workerIndex)
-        {
-            int[] tempArray = workerIndex;
-            for (int i = 0; i < tempArray.Length; i++)
-            {
-                for (int k = 0; k < tempArray.Length; k++)
-                {
-                    if (tempArray[i] > tempArray[Ja)
-
-
-
-                }
-            }
-
-        }*/
 
         private void totalWorkerHoursByDay(ref int[] totalHoursPerWorker, int totalDays)
         {
@@ -751,6 +613,7 @@ namespace ProductionServicesAnalyticsProgram
             }
         }
             
+        //returns the key from the value of the dictionary
         private string getKeyByValue(int value)
         {
             foreach(String name in indexByName.Keys)
@@ -758,6 +621,7 @@ namespace ProductionServicesAnalyticsProgram
                 if (indexByName[name] == value)
                     return name;
             }
+            //if not found return nothing
             return "";
         }
     }

@@ -79,7 +79,6 @@
             this.startDate.Name = "startDate";
             this.startDate.Size = new System.Drawing.Size(644, 44);
             this.startDate.TabIndex = 2;
-            this.startDate.ValueChanged += new System.EventHandler(this.startDate_ValueChanged);
             // 
             // endDate
             // 
@@ -129,7 +128,6 @@
             this.analysisTypeListBox.Name = "analysisTypeListBox";
             this.analysisTypeListBox.Size = new System.Drawing.Size(511, 152);
             this.analysisTypeListBox.TabIndex = 10;
-            this.analysisTypeListBox.SelectedIndexChanged += new System.EventHandler(this.analysisTypeListBox_SelectedIndexChanged);
             // 
             // nameListBox
             // 
@@ -157,7 +155,6 @@
             this.chart1.Size = new System.Drawing.Size(1702, 738);
             this.chart1.TabIndex = 12;
             this.chart1.Text = "chart1";
-            this.chart1.Click += new System.EventHandler(this.chart1_Click);
             // 
             // analysisTypeCheckBoxList
             // 
@@ -172,7 +169,6 @@
             this.analysisTypeCheckBoxList.Name = "analysisTypeCheckBoxList";
             this.analysisTypeCheckBoxList.Size = new System.Drawing.Size(511, 121);
             this.analysisTypeCheckBoxList.TabIndex = 13;
-            this.analysisTypeCheckBoxList.SelectedIndexChanged += new System.EventHandler(this.analysisTypeCheckBoxList_SelectedIndexChanged);
             // 
             // updateButton
             // 
@@ -206,7 +202,6 @@
             this.totalHoursLabel.Size = new System.Drawing.Size(411, 73);
             this.totalHoursLabel.TabIndex = 16;
             this.totalHoursLabel.Text = "Total Hours: ";
-            this.totalHoursLabel.Click += new System.EventHandler(this.totalHoursLabel_Click);
             // 
             // usernameBox
             // 
@@ -215,7 +210,6 @@
             this.usernameBox.Name = "usernameBox";
             this.usernameBox.Size = new System.Drawing.Size(487, 44);
             this.usernameBox.TabIndex = 17;
-            this.usernameBox.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // passwordBox
             // 
@@ -235,7 +229,6 @@
             this.label2.Size = new System.Drawing.Size(164, 37);
             this.label2.TabIndex = 19;
             this.label2.Text = "Username";
-            this.label2.Click += new System.EventHandler(this.label2_Click);
             // 
             // label3
             // 
