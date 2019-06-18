@@ -20,88 +20,31 @@ namespace ProductionServicesAnalyticsProgram
 {
     public partial class Form1 : Form
     {
-        //replace with time selection
-        int period = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
-        //end replacement section
+        //Array for holding the dates of the selections
+        DateTime[] dates;
 
-        //key is index and value is full name separated by a space
-        Dictionary<String, int> indexByName;
+        //Array for holding the worker information
+        Worker[] workers;
 
-
-        int[] minutesPerWorkerByDay, minutesPerWorkerByMonth, minutesPerWorkerByYear;
-
-        int totalDays;
-
-
+        //2D array of working times where the rows are dates and the columns are workers
+        //The elements are the times that are worked by each worker on each date
+        WorkingTime[,] workingTimes;
 
         public Form1()
         {
             InitializeComponent();
-
-            
-        }
-        private void paperaEdit(ref string[] dataArray)
-        {
-            if (dataArray[3].Contains("I") || dataArray[3].Contains("V") || dataArray[3].Contains("X"))
-            {
-                dataArray[2] += " " + dataArray[3];
-                for(int i = 3; i < dataArray.Length - 1; i++)
-                {
-                    dataArray[i] = dataArray[i + 1];
-                }
-            }
-        }
-        
-        private bool checkZStaffOrNeeded(string data)
-        {
-            if (data.Contains("Z-Staff") || data.Contains("Z-NEEDED") || data.Contains("Person"))
-                return true;
-            else
-                return false;
         }
 
-       
         private void submitButton_Click(object sender, EventArgs e)
         {
-            if (analysisTypeCheckBoxList.GetItemChecked(0) == false && analysisTypeCheckBoxList.GetItemChecked(1) == false && analysisTypeCheckBoxList.GetItemChecked(2) == false)
-            {
-                MessageBox.Show("Please check day, month, or year before selecting submit.");
-            }
-            else
-            {
-                //MessageBox.Show("Starting data grab...\nPlease wait for a completion dialog.\nPress OK to begin.");
+            //execute data grab in background
+            backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(BackgroundWorker1_ProgressChanged);
+            backgroundWorker1.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker1_RunWorkerCompleted);
+            backgroundWorker1.WorkerReportsProgress = true;
 
-                //execute data grab in background
-                backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(BackgroundWorker1_ProgressChanged);
-                backgroundWorker1.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker1_RunWorkerCompleted);
-                backgroundWorker1.WorkerReportsProgress = true;
-
-                if (!backgroundWorker1.IsBusy)
-                    backgroundWorker1.RunWorkerAsync();
-
-                //MessageBox.Show("Data grab is complete!\nPress OK to continue...");
-
-            }
-        }
-
-        private void updateButton_Click(object sender, EventArgs e)
-        {
-            chart1.Series[0].Points.Clear();
-            double[] dataArrayForSelectedWorker = null;
-            double total = 0;
-            grabDataFor(nameListBox.SelectedValue.ToString(), ref dataArrayForSelectedWorker);
-
-            for (int i = 0; i < dataArrayForSelectedWorker.Length; i++)
-            {
-                chart1.Series[0].Points.AddXY(i + 1, dataArrayForSelectedWorker[i]);
-                chart1.Series[0].Points[i].MarkerStyle = MarkerStyle.Circle;
-                chart1.Series[0].Points[i].MarkerSize = 10;
-                chart1.Series[0].Points[i].MarkerColor = Color.Blue;
-
-                total += dataArrayForSelectedWorker[i];
-            }
-            
-            totalHoursLabel.Text = "Total Hours: " + total;
+            //run background process
+            if (!backgroundWorker1.IsBusy)
+                backgroundWorker1.RunWorkerAsync();
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -124,67 +67,13 @@ namespace ProductionServicesAnalyticsProgram
             toolTip1.InitialDelay = 5000;
             toolTip1.ReshowDelay = 1000;
             toolTip1.ShowAlways = true;
-            toolTip1.SetToolTip(this.chart1, "Select 'Update Chart' to view data.");
-            toolTip1.SetToolTip(this.nameListBox, "Select a name and press 'Update Chart' to view data.");
+            toolTip1.SetToolTip(this.chart1, "Select a name to view data.");
         }
 
-        public int findMinutes(String startTime, String endTime)
-        {
-            int startHours = 0, startMinutes = 0, endHours = 0, endMinutes = 0;
-            if (startTime.Contains("NOON"))
-            {
-                startHours = 12;
-                startMinutes = 0;
-            }
-            else if(startTime.Contains("MIDNIGHT"))
-            {
-                startHours = 24;
-                startMinutes = 0;
-            }
-            else
-            {
-                startHours = Convert.ToInt32(startTime.Substring(0, startTime.IndexOf(':')));
-                startMinutes = Convert.ToInt32(startTime.Substring(startTime.IndexOf(':') + 1, 2));
-                if (startTime.Contains("PM"))
-                    startHours += 12;
-            }
-
-            if (endTime.Contains("NOON"))
-            {
-                endHours = 12;
-                endMinutes = 0;
-            }
-            else if (endTime.Contains("MIDNIGHT"))
-            {
-                endHours = 0;
-                endMinutes = 0;
-            }
-            else
-            {
-
-
-                endHours = Convert.ToInt32(endTime.Substring(0, endTime.IndexOf(':')));
-                endMinutes = Convert.ToInt32(endTime.Substring(endTime.IndexOf(':') + 1, 2));
-                if (endTime.Contains("PM"))
-                    endHours += 12;
-            }
-
-            startMinutes += 60 * startHours;
-            endMinutes += 60 * endHours;
-
-            //flag for PM to AM switch
-            
-            //check if there is an PM to AM switch or full day
-            if(endMinutes - startMinutes <= 0)
-            {
-                endMinutes += 1440;
-            }
-            //returns for calulated amount of minutes
-            return endMinutes - startMinutes; 
-        }
-
+        //export total hours for a certain period within the searched criteria to an excel file
         private void excelExport_Click(object sender, EventArgs e)
-        {/*
+        {
+            /*
             String[] jobsData = new String[jobs.Count];
             Microsoft.Office.Interop.Excel.Application oXL;
             Microsoft.Office.Interop.Excel._Workbook oWB;
@@ -242,8 +131,9 @@ namespace ProductionServicesAnalyticsProgram
             catch
             {
 
-            }*/
-        }
+            }
+            */
+        }  
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -252,260 +142,56 @@ namespace ProductionServicesAnalyticsProgram
                 "Created by Greg Fairbanks and Matthew Bocharnikov.\n\n" +
                 "For use at Virginia Tech Production Services.");
         }
-
-        private void grabDataFor(String name, ref double[] dataArray)
-        {
-            int curIndex = indexByName[name], iCount = 0;
-            //makes array for days
-
-            //if day is selected
-            if (analysisTypeListBox.SelectedIndex == 0)
-                iCount = (endDate.Value.Date - startDate.Value.Date).Days + 1;
-            //if month is selected
-            else if (analysisTypeListBox.SelectedIndex == 1)
-                iCount = (endDate.Value.Year - startDate.Value.Year) * 12 + (endDate.Value.Month - startDate.Value.Month) + 1;
-            //if year is selected
-            else if (analysisTypeListBox.SelectedIndex == 2)
-                iCount = (endDate.Value.Year - startDate.Value.Year) + 1;
-            else
-                return; //do noting maybe throw error
-
-            if (iCount != 0)
-                dataArray = new double[iCount];
-
-            //make data array
-            for (int i = 0; i < iCount; i++)
-            {
-                //if day is selected
-                if (analysisTypeListBox.SelectedIndex == 0)
-                {
-                    dataArray[i] = minutesPerWorkerByDay[curIndex] / 60;
-                    chart1.ChartAreas[0].AxisX.Title = "Days";
-                }
-                //if month is selected
-                else if (analysisTypeListBox.SelectedIndex == 1)
-                {
-                    dataArray[i] = minutesPerWorkerByMonth[curIndex] / 60;
-                    chart1.ChartAreas[0].AxisX.Title = "Months";
-                }
-                //if year is selected
-                else if (analysisTypeListBox.SelectedIndex == 2)
-                {
-                    dataArray[i] = minutesPerWorkerByYear[curIndex] / 60;
-                    chart1.ChartAreas[0].AxisX.Title = "Years";
-                }
-                else
-                    dataArray[i] = 0;
-
-                //update the current index
-                curIndex += indexByName.Count;
-            }
-
-
-        }
-
-        //returns a set of ints representing order from greatest to least of indexes of names
-        private int[] findOverLimit(int totalDays)
-        {
-            int[] totalHoursPerWorker = new int[indexByName.Count - 1], tempOverWorkers = new int[indexByName.Count - 1], overWorkers;
-            int totalOver = 0;
-
-            totalWorkerHoursByDay(ref totalHoursPerWorker, totalDays);
-
-            //check for how many are over the limit
-            for(int j = 0; j < totalHoursPerWorker.Length; j++)
-            {
-                if (totalHoursPerWorker[j] >= 40 * 60)
-                {
-                    tempOverWorkers[j] = j;
-                    totalOver++;
-                }
-                else
-                {
-                    tempOverWorkers[j] = -1;
-                }
-                  
-            }
-
-            overWorkers = new int[totalOver];
-
-            for(int r = 0; r < tempOverWorkers.Length; r++)
-            {
-                if (tempOverWorkers[r] != -1)
-                {
-                    overWorkers[totalOver - 1] = r + 1;
-                    totalOver--;
-                }
-            }
-
-            return overWorkers;
-        }
-
-        private void HoursCheck_Click(object sender, EventArgs e)
-        {
-            if (totalDays == 7 && analysisTypeCheckBoxList.GetItemChecked(0))
-            {
-                checkerListView.Clear();
-                checkerListView.Scrollable = true;
-                checkerListView.View = View.Details;
-
-                checkerListView.Columns.Add("Name");
-                checkerListView.Columns.Add("Hours Needed");
-
-                int[] tempWorkers = orderByHoursNeeded(totalDays), tempHours = new int[indexByName.Count - 1];
-                totalWorkerHoursByDay(ref tempHours, totalDays);
-                string[] names = new string[tempWorkers.Length], hours = new string[tempHours.Length];
-
-
-                double temp;
-
-                for (int i = 0; i < tempWorkers.Length; i++)
-                {
-
-                    checkerListView.Items.Add(getKeyByValue(tempWorkers[i]));
-
-                    temp = (double)(tempHours[tempWorkers[i] - 1] / 60);
-                    if (temp > 8)
-                    {
-                        temp = 0;
-                    }
-                    else
-                    {
-                        temp = 8 - temp;
-                    }
-                    checkerListView.Items[i].SubItems.Add(temp.ToString("0.##"));
-                }
-                checkerListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                checkerListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-                checkerListView.GridLines = true;
-            }
-            else
-            {
-                MessageBox.Show("To use this feature follow the steps below:\n-Select a one week period\n-Ensure that Day is selected for analysis type\n-Click submit to update the software", "Invalid Request", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private void OvertimeCheck_Click(object sender, EventArgs e)
-        {
-            if (totalDays == 7 && analysisTypeCheckBoxList.GetItemChecked(0))
-            {
-
-                checkerListView.Clear();
-                checkerListView.Scrollable = true;
-                checkerListView.View = View.Details;
-
-                checkerListView.Columns.Add("Name");
-                checkerListView.Columns.Add("Total Hours");
-
-                int[] overWorkers = findOverLimit(totalDays), totalHours = new int[indexByName.Count - 1];
-                totalWorkerHoursByDay(ref totalHours, totalDays);
-                double temp;
-
-                for (int i = 0; i < overWorkers.Length; i++)
-                {
-
-                    checkerListView.Items.Add(getKeyByValue(overWorkers[i]));
-
-                    temp = (double)(totalHours[overWorkers[i] - 1] / 60);
-
-                    checkerListView.Items[i].SubItems.Add(temp.ToString("0.##"));
-                }
-
-                checkerListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.ColumnContent);
-                checkerListView.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
-                checkerListView.GridLines = true;
-            }
-            else
-            {
-                MessageBox.Show("To use this feature follow the steps below:\n-Select a one week period\n-Ensure that Day is selected for analysis type\n-Click submit to update the software", "Invalid Request", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-        }
-
-        private int[] orderByHoursNeeded(int totalDays)
-        {
-            int[] totalHoursPerWorker = new int[indexByName.Count - 1], orderedLToGHourTotal = new int[indexByName.Count - 1];
-            totalWorkerHoursByDay(ref totalHoursPerWorker, totalDays);
-            int tempMinIndex, orderedArrayIndex = 0;
-            //orderedLToGHourTotal = totalHoursPerWorker;
-
-            for (int i = 0; i < totalHoursPerWorker.Length; i++)
-            {
-                tempMinIndex = totalHoursPerWorker.Length - 1;
-                for (int j = 0; j < totalHoursPerWorker.Length; j++)
-                {
-                    if(totalHoursPerWorker[j] != -1)
-                    {
-                        tempMinIndex = j;
-                        break;
-                    }
-                }
-
-                for (int k = 0; k < totalHoursPerWorker.Length; k++)
-                {
-                    if (totalHoursPerWorker[tempMinIndex] > totalHoursPerWorker[k] && totalHoursPerWorker[k] != -1)
-                        tempMinIndex = k;
-                }
-                totalHoursPerWorker[tempMinIndex] = -1;
-
-                orderedLToGHourTotal[orderedArrayIndex] = tempMinIndex + 1;
-                orderedArrayIndex++;
-            }
-            return orderedLToGHourTotal;
-        }
-
-
-        private void totalWorkerHoursByDay(ref int[] totalHoursPerWorker, int totalDays)
-        {
-            for (int i = 1; i < indexByName.Count; i++)
-            {
-                for (int k = 0; k < totalDays; k++)
-                {
-                    totalHoursPerWorker[i - 1] += minutesPerWorkerByDay[i + (k * indexByName.Count)];
-                }
-            }
-        }
-            
-        //returns the key from the value of the dictionary
-        private string getKeyByValue(int value)
-        {
-            foreach(String name in indexByName.Keys)
-            {
-                if (indexByName[name] == value)
-                    return name;
-            }
-            //if not found return nothing
-            return "";
-        }
-
-
-
+       
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            int progressBarCompletion = 0;
-            backgroundWorker1.ReportProgress(progressBarCompletion);
+            //for keeping track of completion of process
+            double progressBarCompletion = 0;
 
+            //reports process completion percentage
+            backgroundWorker1.ReportProgress((int)progressBarCompletion);
+
+            //stores username and password data in text file as well as prefills the appropriate textbox for user ease
             if (usernameBox.Text != "" && passwordBox.Text != "")
             {
                 System.IO.File.WriteAllLines(@"userData.txt", new string[] { usernameBox.Text, passwordBox.Text });
             }
-
             String user = usernameBox.Text;
             String pass = passwordBox.Text;
 
+            //calculating the time difference in days and normalizing the answer
+            TimeSpan diff = startDate.Value - endDate.Value;
+            int totalDays = (int)diff.TotalDays;
+            if (totalDays < 0)
+                totalDays *= -1;
+            //to account for inclusive of start date and exclusive of end date
+            totalDays++;
 
+            //find progress bar increment value
+            double progressBarIncrement = 90.0 / totalDays;
 
+            DateTime currentDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day);
+
+            //initializes the dates array
+            dates = new DateTime[totalDays];
+
+            //runs the selenium Chrome driver and uses it
             var driverService = ChromeDriverService.CreateDefaultService();
             driverService.HideCommandPromptWindow = true;
             ChromeOptions options = new ChromeOptions();
             options.AddArgument("headless");
 
+            //updates progress bar
+            progressBarCompletion += 2;
+            if (progressBarCompletion > 99)
+                progressBarCompletion = 99;
+            if (progressBarCompletion <= 99)
+                backgroundWorker1.ReportProgress((int)progressBarCompletion);
+
+            //selenium driver process
             IWebDriver driver = new ChromeDriver(driverService, options);
+
             driver.Url = "http://172.21.20.41/cepdotnet/CEPloginToCEP.aspx";
-
-            progressBarCompletion += 5;
-            backgroundWorker1.ReportProgress(progressBarCompletion);
-
-
 
             IWebElement username = driver.FindElement(By.Id("txtUserName"));
             IWebElement password = driver.FindElement(By.Id("txtPassword"));
@@ -518,191 +204,189 @@ namespace ProductionServicesAnalyticsProgram
 
             IWebElement lgnBtn = driver.FindElement(By.Id("sbtLogin"));
             lgnBtn.Click();
+        
+            //updates the progress bar
+            progressBarCompletion += 3;
+            if (progressBarCompletion > 99)
+                progressBarCompletion = 99;
+            if (progressBarCompletion <= 99)
+                backgroundWorker1.ReportProgress((int)progressBarCompletion);
 
-
+            //grabs live info from the CEP page to get realistic data for exomployees
             IReadOnlyCollection<IWebElement> elements;
-            indexByName = new Dictionary<String, int>();
-
-
-            //grab all names and store them in the dictionary
-            int indexForDictionary = 1;
-            indexByName.Add("All", 0);
-
             driver.Url = "http://172.21.20.41/cepdotnet/CEPemployeeSearch.aspx";
             elements = driver.FindElements(By.ClassName("CEPSub"));
-            String tempFirstName = "", tempLastName = "", tempElementText;
 
-            foreach (IWebElement element in elements)
+            String tempEmployeeInfo = "", tempFirstName = "", tempLastName = "";
+
+            workingTimes = new WorkingTime[totalDays, elements.Count];
+            workers = new Worker[elements.Count];
+
+            int tempWorkerIndex = 0;
+            foreach (IWebElement employerInfo in elements)
             {
-                if (element.Text.Contains("NoEmail@.xxx"))
-                    break;
-                tempLastName = element.Text.Substring(0, element.Text.IndexOf(",") - 1);
-                tempElementText = element.Text.Substring(tempLastName.Length + 3);
-                tempFirstName = tempElementText.Substring(0, tempElementText.IndexOf(" "));
-                indexByName.Add(tempFirstName + " " + tempLastName, indexForDictionary);
-                indexForDictionary++;
+                tempEmployeeInfo = getUntilNumber(employerInfo.Text);
+                tempLastName = tempEmployeeInfo.Substring(0, tempEmployeeInfo.IndexOf(",")).TrimStart().TrimEnd();
+                tempFirstName = tempEmployeeInfo.Substring(tempEmployeeInfo.IndexOf(",") + 1).TrimStart().TrimEnd();
+                workers[tempWorkerIndex] = new Worker(tempFirstName, tempLastName);
+                tempWorkerIndex++;
             }
 
+            //temp variables for schedule analysis
+            String[] tempElementArray;
+            String tempString, tempStringData;
+            DateTime tempStart, tempEnd;
+            int tempHours, tempMinutes;
+
+            //updates progess bar
             progressBarCompletion += 5;
-            backgroundWorker1.ReportProgress(progressBarCompletion);
+            if (progressBarCompletion > 99)
+                progressBarCompletion = 99;
+            if (progressBarCompletion <= 99)
+                backgroundWorker1.ReportProgress((int)progressBarCompletion);
 
-
-            totalDays = (endDate.Value.Date - startDate.Value.Date).Days + 1;
-
-            double progressBarIncrementCount = 85.0 / totalDays, progressBarIncrement = 0;
-
-          
-            int dayIndexChange = 0, monthIndexChange = 0, yearIndexChange = 0;
-
-            if (analysisTypeCheckBoxList.GetItemChecked(0))
+            for (int currentDateIndex = 0; currentDateIndex < totalDays; currentDateIndex++)
             {
-                minutesPerWorkerByDay = new int[indexForDictionary * ((endDate.Value.Date - startDate.Value.Date).Days + 1)];
-            }
-            if (analysisTypeCheckBoxList.GetItemChecked(1))
-            {
-                minutesPerWorkerByMonth = new int[indexForDictionary * ((endDate.Value.Year - startDate.Value.Year) * 12 + (endDate.Value.Month - startDate.Value.Month) + 1)];
-            }
-            if (analysisTypeCheckBoxList.GetItemChecked(2))
-            {
-                minutesPerWorkerByYear = new int[indexForDictionary * ((endDate.Value.Year - startDate.Value.Year) + 1)];
-            }
-            //start analysis by day
+                //update the webpage for analysis
+                driver.Url = "http://172.21.20.41/cepdotnet/CEPHome.aspx?day=" + currentDate.Day.ToString() + "&month=" + currentDate.Month.ToString() + "&year=" + currentDate.Year.ToString();
 
-            String[] tempElementArray, tempWorkerDataArray;
-            String tempStartTime, tempEndTime;
-
-            int tempTime;
-
-
-            int cMonth = startDate.Value.Month, cDay = startDate.Value.Day, cYear = startDate.Value.Year;
-            for (int dateCounter = (endDate.Value.Date - startDate.Value.Date).Days + 1; dateCounter > 0; dateCounter--)
-            {
-                progressBarIncrement += progressBarIncrementCount;
-                progressBarCompletion += (int)progressBarIncrement;
-                if (progressBarIncrement > 1)
-                    progressBarIncrement = 0;
-                if (progressBarCompletion > 95)
-                    progressBarCompletion = 95;
-                if (progressBarCompletion <= 95)
-                    backgroundWorker1.ReportProgress(progressBarCompletion);
-
-
-                driver.Url = "http://172.21.20.41/cepdotnet/CEPHome.aspx?day=" + cDay + "&month=" + cMonth + "&year=" + cYear;
+                dates[currentDateIndex] = currentDate;
 
                 //grabs all events for current selected day
                 elements = driver.FindElements(By.ClassName("CEPDaySub"));
+
                 foreach (IWebElement element in elements)
                 {
                     //data on individual workers starting at index 3 (inclusive)
                     tempElementArray = element.Text.Split('\n');
                     for (int i = 3; i < tempElementArray.Length; i++)
                     {
-                        //0: first name
-                        //1: last name
-                        //2: start time
-                        //3: start time AM/PM
-                        //4: end time
-                        //5: end time AM/PM
+                        //isolates the string with data
+                        tempStringData = tempElementArray[i].TrimStart().TrimEnd();
 
+                        //isolates the first and last name with a space in between
+                        tempString = tempStringData.Substring(0, getIndexOfTime(tempStringData)).TrimStart().TrimEnd();
 
+                        tempFirstName = tempString.Substring(0, tempString.IndexOf(" "));
+                        tempLastName = tempString.Substring(tempString.IndexOf(" ") + 1);
 
-                        tempWorkerDataArray = tempElementArray[i].Split(' ');
+                        //isolate the the times
+                        tempStringData = tempStringData.Substring(getIndexOfTime(tempStringData));
 
-
-
-                        if (!checkZStaffOrNeeded(tempWorkerDataArray[2]))
+                        //isolate the start time
+                        if (tempStringData.IndexOf("NOON") == 0)
                         {
-
-                            //The Papera edit
-                            paperaEdit(ref tempWorkerDataArray);
-
-
-                            tempStartTime = tempWorkerDataArray[3];
-
-                            if (tempStartTime.Contains("MIDNIGHT") || tempStartTime.Contains("NOON"))
-                            {
-                                tempEndTime = tempWorkerDataArray[4];
-                                if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
-                                {
-                                    tempEndTime += " " + tempWorkerDataArray[5];
-                                }
-                            }
-                            else
-                            {
-                                tempStartTime += " " + tempWorkerDataArray[4];
-                                tempEndTime = tempWorkerDataArray[5];
-                                if (!(tempEndTime.Contains("MIDNIGHT") || tempEndTime.Contains("NOON")))
-                                {
-                                    tempEndTime += " " + tempWorkerDataArray[6];
-                                }
-                            }
-
-                            tempTime = findMinutes(tempStartTime, tempEndTime);
-
-                            if (analysisTypeCheckBoxList.GetItemChecked(0))
-                            {
-                                minutesPerWorkerByDay[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] + (dayIndexChange * indexForDictionary)] += tempTime;
-                                minutesPerWorkerByDay[dayIndexChange * indexByName.Count] += tempTime;
-                            }
-                            if (analysisTypeCheckBoxList.GetItemChecked(1))
-                            {
-                                minutesPerWorkerByMonth[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * (monthIndexChange * indexForDictionary)] += tempTime;
-                                minutesPerWorkerByMonth[monthIndexChange * indexByName.Count] += tempTime;
-                            }
-                            if (analysisTypeCheckBoxList.GetItemChecked(2))
-                            {
-                                minutesPerWorkerByYear[indexByName[tempWorkerDataArray[1] + " " + tempWorkerDataArray[2]] * (yearIndexChange * indexForDictionary)] += tempTime;
-                                minutesPerWorkerByYear[yearIndexChange * indexByName.Count] += tempTime;
-                            }
+                            tempStart = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 12, 0, 0);
+                            tempStringData = tempStringData.Substring(4).TrimStart();
                         }
+
+                        //very unlikely for a time to start at midnight
+                        else if (tempStringData.IndexOf("MIDNIGHT") == 0)
+                        {
+                            tempStart = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 0, 0, 0);
+                            tempStart.AddDays(1);
+                            tempStringData = tempStringData.Substring(8).TrimStart();
+                        }
+
+                        //for time cases without letters
+                        else
+                        {
+                            tempString = tempStringData.Substring(0, tempStringData.IndexOf(":"));
+                            tempStringData = tempStringData.Substring(tempStringData.IndexOf(":") + 1);
+                            tempHours = Int32.Parse(tempString);
+
+                            //isolates the minutes
+                            tempString = tempStringData.Substring(0, 2);
+                            tempMinutes = Int32.Parse(tempString);
+
+                            //isolate the AM or PM
+                            tempStringData = tempStringData.Substring(2).TrimStart();
+
+                            tempString = tempStringData.Substring(0, 2);
+                            if (tempString.Equals("PM") && tempHours!= 12)
+                                tempHours += 12;
+                           
+
+
+                            tempStart = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, tempHours, tempMinutes, 0);
+
+                            tempStringData = tempStringData.Substring(2).TrimStart();
+
+                        }
+
+                        //time case for NOON
+                        if (tempStringData.IndexOf("NOON") == 0)
+                        {
+                            tempEnd = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 12, 0, 0);
+                        }
+
+                        //time case for MIDNIGHT
+                        else if (tempStringData.IndexOf("MIDNIGHT") == 0)
+                        {
+                            tempEnd = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, 0, 0, 0);
+                            tempEnd.AddDays(1);
+                        }
+
+                        //time case for times with no letters
+                        else
+                        {
+                            tempString = tempStringData.Substring(0, tempStringData.IndexOf(":"));
+                            tempStringData = tempStringData.Substring(tempStringData.IndexOf(":") + 1);
+                            tempHours = Int32.Parse(tempString);
+
+                            //isolates the minutes
+                            tempString = tempStringData.Substring(0, 2);
+                            tempMinutes = Int32.Parse(tempString);
+
+                            //isolate the AM or PM
+                            tempStringData = tempStringData.Substring(2).TrimStart();
+
+                            tempString = tempStringData.Substring(0, 2);
+                            if (tempString.Equals("PM") && tempHours != 12)
+                                tempHours += 12;
+
+                            tempEnd = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, tempHours, tempMinutes, 0);
+                        }
+
+                        //grabs the event name
+                        tempString = tempElementArray[0];
+                        if (tempString.Contains("\r"))
+                            tempString = tempString.Substring(0, tempString.Length - 1);
+
+                        //creates a WorkingTime object in 2D array
+                        if (workingTimes[currentDateIndex, findWorkerIndex(tempFirstName, tempLastName)] == null)
+                            workingTimes[currentDateIndex, findWorkerIndex(tempFirstName, tempLastName)] = new WorkingTime(tempString, tempStart, tempEnd);
+                        else
+                            workingTimes[currentDateIndex, findWorkerIndex(tempFirstName, tempLastName)].addWorkTimes(tempStart, tempEnd);
+
                     }
 
                 }
 
-                cDay++;
-                dayIndexChange++;
-                int daysInMonth = System.DateTime.DaysInMonth(cYear, cMonth);
-                if (cDay > daysInMonth)
-                {
-                    cDay = 1;
-                    cMonth++;
-                    monthIndexChange++;
-                    if (cMonth > 12)
-                    {
-                        cMonth = 1;
-                        cYear++;
-                        yearIndexChange++;
-                    }
+                //updates the current date
+                currentDate = currentDate.AddDays(1);
 
-                }
-
+                //update the progress bar
+                progressBarCompletion += progressBarIncrement;
+                if (progressBarCompletion > 99)
+                    progressBarCompletion = 99;
+                if (progressBarCompletion <= 99)
+                    backgroundWorker1.ReportProgress((int)progressBarCompletion);
             }
 
+            
+            //quits driver and calculates the total minutes of each worker
             driver.Quit();
-
-
-
+            setAllWorkerTotalMinutes();
 
             //finish up progress bar
             while (progressBarCompletion < 100)
             {
                 progressBarCompletion++;
-                backgroundWorker1.ReportProgress(progressBarCompletion);
+                if (progressBarCompletion > 100)
+                    progressBarCompletion = 100;
+                backgroundWorker1.ReportProgress((int)progressBarCompletion);
             }
-
-            
-
-            
-        }
-
-        private void analysisTypeCheckBoxList_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void toolTip1_Popup(object sender, PopupEventArgs e)
-        {
-
         }
 
         private void BackgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -715,16 +399,289 @@ namespace ProductionServicesAnalyticsProgram
         private void BackgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             percentageLabel.Text = "Complete";
-            
-            //sets up list boxes to current instance
-            analysisTypeListBox.DataSource = analysisTypeCheckBoxList.CheckedItems;
-            nameListBox.DataSource = indexByName.Keys.ToList();
-            updateButton.Visible = true;
-            updateButton.PerformClick();
+
+            //this entire section is for figuring out the overlapped workers and the times that are overlapping each day
+            String[] names = new String[workers.Length], overlappedWorkers = new String[workers.Length];
+            int overlappedWorkersCount = 0;
+
+            for (int i = 0; i < workers.Length; i++)
+            {
+                names[i] = workers[i].getFirstName() + " " + workers[i].getLastName();
+            }
+            nameListBox.DataSource = names;
+
+            for (int currentDateIndex = 0; currentDateIndex < dates.Length; currentDateIndex++)
+            {
+                for (int k = 0; k < workers.Length; k++)
+                {
+                    if (workingTimes[currentDateIndex, findWorkerIndex(workers[k].getFirstName(), workers[k].getLastName())] != null)
+                    {
+                        for (int h = 0; h < workingTimes[currentDateIndex, findWorkerIndex(workers[k].getFirstName(), workers[k].getLastName())].getOverlapFlags().Length; h++)
+                        {
+                            if (workingTimes[currentDateIndex, findWorkerIndex(workers[k].getFirstName(), workers[k].getLastName())].getOverlapFlags()[h] == 1)
+                            {
+                                if (!checkForValueInStringArray(overlappedWorkers, overlappedWorkersCount, workers[k].getFirstName() + " " + workers[k].getLastName()))
+                                {
+                                    overlappedWorkers[overlappedWorkersCount] = workers[k].getFirstName() + " " + workers[k].getLastName();
+                                    overlappedWorkersCount++;
+                                }
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            String[] tempOverlappedWorkers = new String[overlappedWorkersCount];
+            for (int f = 0; f < overlappedWorkersCount; f++)
+            {
+
+                tempOverlappedWorkers[f] = overlappedWorkers[f];
+            }
+
+            overlapNameListBox.DataSource = tempOverlappedWorkers;
         }
 
+        //returns a string up until any number
+        private String getUntilNumber(String text)
+        {
+            String tempInfo = "";
+            foreach (char c in text)
+            {
+                if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9')
+                    break;
+                else
+                    tempInfo += c.ToString();
+            }
+            return tempInfo;
+        }
 
+        //checks for a non-student worker
+        //This is for future debugging, not vital
+        private bool checkIfZWorker(String text)
+        {
+            if (text.Contains("Z-") || text.Contains("Z -") || text.Contains("z-") || text.Contains("z -"))
+                return true;
+            return false;
+        }
+
+        private int findWorkerIndex(String firstName, String lastName)
+        {
+            //finds the index of the worker based on name, returns -1 if not found
+            for (int i = 0; i < workers.Length; i++)
+            {
+                if (workers[i].getFirstName().Equals(firstName) && workers[i].getLastName().Equals(lastName))
+                    return i;
+            }
+            return -1;
+        }
+
+        private void overtimeCheckButton_Click(object sender, EventArgs e)
+        {
+            int dateIndex, maxSpan = 7, tempTotal;
+            DateTime dateCheck = overtimeDatePicker.Value;
+            dateCheck = dateCheck.AddDays(7);
+
+            //checks if valid selection
+            if (dateCheck.CompareTo(endDate.Value) >= 0)
+            {
+                MessageBox.Show("Choose a date between (including start date)\nthe start and end date selected.\nEnsure that the date selection is at least 8 days apart\nand that the selected date for checking for overtime workers is\nat least 8 days from the end date selection.");
+                return;
+            }
+
+            dateIndex = getIndexFromDate(overtimeDatePicker.Value);
+
+            //checks for overtime workers
+            for (int w = 0; w < workers.Length; w++)
+            {
+                tempTotal = 0;
+                for (int d = 0; d < maxSpan; d++)
+                {
+                    if (workingTimes[dateIndex + d, w] != null)
+                        tempTotal += workingTimes[dateIndex + d, w].getWorkerTotalMinutes();
+                }
+                if (tempTotal >= 2400)
+                {
+                    overtimeNameListBox.Items.Add(workers[w].getFirstName() + " " + workers[w].getLastName());
+                }
+            }
+        }
+
+        private void overtimeNameListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            //updates the information beside the selection box
+            //updates on selection
+            overtimeInformationView.Items.Clear();
+
+            int dateIndex, maxSpan = 8, tempTotal;
+            double totalHours = 0;
+            String fN = overtimeNameListBox.SelectedItem.ToString().Substring(0, overtimeNameListBox.SelectedItem.ToString().IndexOf(" "));
+            String lN = overtimeNameListBox.SelectedItem.ToString().Substring(overtimeNameListBox.SelectedItem.ToString().IndexOf(" ") + 1);
+
+
+            int w = findWorkerIndex(fN, lN);
+
+            dateIndex = getIndexFromDate(overtimeDatePicker.Value);
+            bool extraSpace = false;
+
+            tempTotal = 0;
+            for (int d = 0; d < maxSpan; d++)
+            {
+                if (workingTimes[dateIndex + d, w] != null)
+                {
+
+                    tempTotal += workingTimes[dateIndex + d, w].getWorkerTotalMinutes();
+                    String[] temp = workingTimes[dateIndex + d, w].getEventNames();
+
+                    for (int i = 0; i < temp.Length; i++)
+                    {
+                        overtimeInformationView.Items.Add(temp[i]);
+                        overtimeInformationView.Items.Add(dates[dateIndex + d].ToString("dddd, dd MMMM yyyy"));
+                        overtimeInformationView.Items.Add("");
+                        extraSpace = true;
+                    }
+
+                }
+
+
+            }
+
+            if (extraSpace)
+            {
+                //adds extra space
+                overtimeInformationView.Items.Add("");
+                overtimeInformationView.Items.Add("");
+            }
+            totalHours = tempTotal / 60.0;
+            overtimeInformationView.Items.Add("Total Hours: " + totalHours);
+
+        }
+
+        //gets the index of any sort of time parameter found in string extracted from CEP
+        private int getIndexOfTime(String text)
+        {
+            int i1 = 10000, i2 = 0;
+            if (text.Contains("NOON"))
+                i1 = text.IndexOf("NOON");
+            if (text.Contains("MIDNIGHT") && i1 > text.IndexOf("MIDNIGHT") && text.IndexOf("MIDNIGHT") != -1)
+                i1 = text.IndexOf("MIDNIGHT");
+
+            foreach (char c in text)
+            {
+                if (c == '0' || c == '1' || c == '2' || c == '3' || c == '4' || c == '5' || c == '6' || c == '7' || c == '8' || c == '9')
+                    break;
+                else
+                    i2++;
+            }
+
+            if (i1 < i2)
+                return i1;
+            else
+                return i2;
+        }
+
+        //sets the total worker minutes for each worker
+        private void setAllWorkerTotalMinutes()
+        {
+            for (int i = 0; i < workingTimes.GetLength(0); i++)
+            {
+                for (int k = 0; k < workers.Length; k++)
+                {
+                    if (workingTimes[i, k] != null)
+                    {
+                        workers[k].setTotalMinutes(workingTimes[i, k].getWorkerTotalMinutes());
+                    }
+                }
+            }
+        }
+
+        //grabs the index of the date specified
+        private int getIndexFromDate(DateTime date)
+        {
+            for (int i = 0; i < dates.Length; i++)
+            {
+                if (dates[i].Year == date.Year && dates[i].Month == date.Month && dates[i].Day == date.Day)
+                    return i;
+            }
+            return -1;
+        }
+
+        //updates chart on name selection instead of update button
+        private void nameListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            chart1.Series[0].Points.Clear();
+            double[] dataArrayForSelectedWorker = new double[dates.Length];
+            double total = 0;
+            //grabDataFor(nameListBox.SelectedValue.ToString(), ref dataArrayForSelectedWorker);
+
+            String firstName = nameListBox.SelectedValue.ToString().Substring(0, nameListBox.SelectedValue.ToString().IndexOf(" "));
+            String lastName = nameListBox.SelectedValue.ToString().Substring(nameListBox.SelectedValue.ToString().IndexOf(" ") + 1);
+            int workerIndex = findWorkerIndex(firstName, lastName);
+
+            for (int d = 0; d < dates.Length; d++)
+            {
+                if (workingTimes[d, workerIndex] != null)
+                    dataArrayForSelectedWorker[d] = workingTimes[d, workerIndex].getWorkerTotalMinutes() / 60.0;
+                else
+                    dataArrayForSelectedWorker[d] = 0;
+            }
+
+            for (int i = 0; i < dataArrayForSelectedWorker.Length; i++)
+            {
+                chart1.Series[0].Points.AddXY(i + 1, dataArrayForSelectedWorker[i]);
+                chart1.Series[0].Points[i].MarkerStyle = MarkerStyle.Circle;
+                chart1.Series[0].Points[i].MarkerSize = 10;
+                chart1.Series[0].Points[i].MarkerColor = Color.Blue;
+
+                total += dataArrayForSelectedWorker[i];
+            }
+
+            totalHoursLabel.Text = "Total Hours: " + total;
+        }
+
+        //check for repeating values in overlapping string array
+        private bool checkForValueInStringArray(String[] arr, int maxIndex, String val)
+        {
+            for(int i = 0; i < maxIndex; i++)
+            {
+                if (arr[i].Equals(val))
+                    return true;
+            }
+            return false;
+        }
+
+        //updates the overlap information on name click
+        private void overlapNameListBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            overlapInformationView.Items.Clear();
+            int workerIndex = findWorkerIndex(overlapNameListBox.SelectedValue.ToString().Substring(0, overlapNameListBox.SelectedValue.ToString().IndexOf(" ")), overlapNameListBox.SelectedValue.ToString().Substring(overlapNameListBox.SelectedValue.ToString().IndexOf(" ") + 1));
+            WorkingTime tempWorkingTime;
+
+            for (int d = 0; d < dates.Length; d++)
+            {
+                tempWorkingTime = workingTimes[d, workerIndex];
+
+                if (tempWorkingTime != null)
+                {
+                    overlapInformationView.Items.Add(dates[d].ToString("dddd, dd MMMM yyyy"));
+
+                    for (int i = 0; i < tempWorkingTime.getOverlapFlags().Length; i++)
+                    {
+
+                        if (tempWorkingTime.getOverlapFlags()[i] == 1)
+                        {
+                            overlapInformationView.Items.Add(tempWorkingTime.getEventNames()[i]);
+                            overlapInformationView.Items.Add("Start Time: " + tempWorkingTime.getStartTimes()[i].ToString("h:mm tt"));
+                            overlapInformationView.Items.Add("End Time: " + tempWorkingTime.getEndTimes()[i].ToString("h:mm tt"));
+                            overlapInformationView.Items.Add("");
+                        }
+
+                    }
+                    overlapInformationView.Items.Add("");
+                    overlapInformationView.Items.Add("");
+                }
+
+            }
+        }
     }
-
 }
 
