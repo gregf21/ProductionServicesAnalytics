@@ -40,9 +40,19 @@ namespace ProductionServicesAnalyticsProgram
         }
 
         //method for adding work time while seeing if there is a possible overlap and recording it
-        public void addWorkTimes(DateTime start, DateTime end)
+        public void addWorkTimes(String eventN, DateTime start, DateTime end)
         {
             DateTime[] temp;
+            String[] tempString;
+
+            //update the start times array
+            tempString = eventNames;
+            eventNames = new String[tempString.Length + 1];
+            for (int i = 0; i < tempString.Length; i++)
+            {
+                eventNames[i] = tempString[i];
+            }
+            eventNames[tempString.Length] = eventN;
 
             //update the start times array
             temp = startTimes;
@@ -81,13 +91,10 @@ namespace ProductionServicesAnalyticsProgram
             {
                 for(int j = 0; j < startTimes.Length; j++)
                 {
-                    if(endTimes[i].CompareTo(startTimes[j]) > 0)
-                    {
-                        if(startTimes[i].CompareTo(endTimes[j]) < 0)
-                        {
-                            overlapFlag[i] = 1;
-                            overlapFlag[j] = 1;
-                        }
+                    if(startTimes[i].CompareTo(startTimes[j]) > 0 && startTimes[i].CompareTo(endTimes[j]) < 0)
+                    { 
+                        overlapFlag[i] = 1;
+                        overlapFlag[j] = 1;
                     }
                 }
             }
@@ -95,7 +102,7 @@ namespace ProductionServicesAnalyticsProgram
 
         //finds the difference between two DateTime objects in minutes
         //useful for finding time worked
-        private int getTimeDifferenceInMinutes(DateTime sTime, DateTime eTime)
+        public int getTimeDifferenceInMinutes(DateTime sTime, DateTime eTime)
         {
             TimeSpan diff = eTime - sTime;
             int tempTime = (int)diff.TotalMinutes;

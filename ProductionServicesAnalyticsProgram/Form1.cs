@@ -37,6 +37,11 @@ namespace ProductionServicesAnalyticsProgram
 
         private void submitButton_Click(object sender, EventArgs e)
         {
+            estimatedTimeRemainingLabel.Visible = true;
+            estimatedTimeRemaining.Visible = true;
+
+            estimatedTimeRemaining.Text = "Calculating...";
+
             //execute data grab in background
             backgroundWorker1.ProgressChanged += new ProgressChangedEventHandler(BackgroundWorker1_ProgressChanged);
             backgroundWorker1.RunWorkerCompleted += new RunWorkerCompletedEventHandler(BackgroundWorker1_RunWorkerCompleted);
@@ -73,8 +78,8 @@ namespace ProductionServicesAnalyticsProgram
         //export total hours for a certain period within the searched criteria to an excel file
         private void excelExport_Click(object sender, EventArgs e)
         {
-            /*
-            String[] jobsData = new String[jobs.Count];
+            
+            //String[] jobsData = new String[jobs.Count];
             Microsoft.Office.Interop.Excel.Application oXL;
             Microsoft.Office.Interop.Excel._Workbook oWB;
             Microsoft.Office.Interop.Excel._Worksheet oSheet;
@@ -90,13 +95,31 @@ namespace ProductionServicesAnalyticsProgram
                 oWB = (Microsoft.Office.Interop.Excel._Workbook)(oXL.Workbooks.Add(""));
                 oSheet = (Microsoft.Office.Interop.Excel._Worksheet)oWB.ActiveSheet;
 
+                oSheet.Name = "Total Hours Per Worker";
+
                 //Add table headers going cell by cell.
-                oSheet.Cells[1, 1] = "Virginia Tech Production Services";
-                oSheet.Cells[2, 1] = "Shift Name";
-                oSheet.Cells[2, 2] = "Shift Date";
-                oSheet.Cells[2, 3] = "Shift Staff";
-                oSheet.Cells[2, 4] = "Time Scheduled";
-                oSheet.Cells[1, 4] = "Number of Shifts: " + jobs.Count;
+                oSheet.Cells[1, 1] = "First Name";
+                oSheet.Cells[1, 2] = "Last Name";
+                oSheet.Cells[1, 3] = "Total Hours";
+
+                for(int r = 0; r < workers.Length; r++)
+                {
+                    oSheet.Cells[r + 2, 1] = workers[r].getFirstName();
+                    oSheet.Cells[r + 2, 2] = workers[r].getLastName();
+                    oSheet.Cells[r + 2, 3] = workers[r].getTotalMinutes() / 60.0;
+                }
+
+                //Format A1:D1 as bold, vertical alignment = center.
+                oSheet.get_Range("A1", "C1").Font.Bold = true;
+                oSheet.get_Range("A1", "C1").VerticalAlignment =
+                    Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
+
+                oRng = oSheet.get_Range("A1", "C1");
+                oRng.EntireColumn.AutoFit();
+
+                //oWB.SaveAs("Total Hours for " + dates[0].ToString("MMMM dd',' yyyy") + " - " + dates[dates.Length - 1].ToString("MMMM dd',' yyyy"));
+
+                /*
                 int row = 4;
                 foreach (Job j in jobs)
                 {
@@ -111,29 +134,238 @@ namespace ProductionServicesAnalyticsProgram
                     row += 1;
                 }
 
+                */
 
-                //Format A1:D1 as bold, vertical alignment = center.
-                oSheet.get_Range("A1", "D1").Font.Bold = true;
-                oSheet.get_Range("A1", "D1").VerticalAlignment =
-                    Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
-                oSheet.get_Range("A2", "D2").Font.Underline = true;
-                oSheet.get_Range("A2", "D2").VerticalAlignment =
+
+                /*
+                oSheet.get_Range("A2", "C2").Font.Underline = true;
+                oSheet.get_Range("A2", "C2").VerticalAlignment =
                     Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
                 // Create an array to multiple values at once.
                 string[,] saNames = new string[5, 2];
+                */
 
+                /*
                 //AutoFit columns A:D.
                 oRng = oSheet.get_Range("A1", "J1");
                 oRng.EntireColumn.AutoFit();
                 oXL.Visible = true;
                 oXL.UserControl = true;
+                */
+
             }
             catch
             {
 
             }
-            */
-        }  
+            
+        }
+
+        private void exportExcelWorkerButton_Click(object sender, EventArgs e)
+        {
+            Microsoft.Office.Interop.Excel.Application oXL;
+            Microsoft.Office.Interop.Excel._Workbook oWB;
+            Microsoft.Office.Interop.Excel._Worksheet oSheet;
+            Microsoft.Office.Interop.Excel.Range oRng;
+            object misvalue = System.Reflection.Missing.Value;
+            try
+            {
+                int workerIndex = findWorkerIndex(nameListBox.SelectedValue.ToString().Substring(0, nameListBox.SelectedValue.ToString().IndexOf(" ")), nameListBox.SelectedValue.ToString().Substring(nameListBox.SelectedValue.ToString().IndexOf(" ") + 1));
+                
+                //Start Excel and get Application object.
+                oXL = new Microsoft.Office.Interop.Excel.Application();
+                oXL.Visible = true;
+
+                //Get a new workbook.
+                oWB = (Microsoft.Office.Interop.Excel._Workbook)(oXL.Workbooks.Add(""));
+                oSheet = (Microsoft.Office.Interop.Excel._Worksheet)oWB.ActiveSheet;
+
+                oSheet.Name = "Worker Shift Information";
+
+                int rowSpaceIndex = 3, rowCount = 0;
+                double tempHours;
+                WorkingTime tempWT;
+                String temp = "";
+
+                //Add table headers going cell by cell.
+                oSheet.Cells[1, 1] = "First Name";
+                oSheet.Cells[1, 2] = "Last Name";
+                oSheet.Cells[1, 3] = "Date";
+                oSheet.Cells[1, 4] = "Event Name";
+                oSheet.Cells[1, 5] = "Shift Start Time";
+                oSheet.Cells[1, 6] = "Shift End Time";
+                oSheet.Cells[1, 7] = "Shift Total Hours";
+                oSheet.Cells[1, 8] = "Total Hours In Day";
+
+                //fill in worker name
+                oSheet.Cells[2, 1] = workers[workerIndex].getFirstName();
+                oSheet.Cells[2, 2] = workers[workerIndex].getLastName();
+
+                oSheet.get_Range("C1", "C1").EntireColumn.NumberFormat = "MM/DD/YYYY";
+
+                for (int r = 0; r < dates.Length; r++)
+                {
+                    tempWT = workingTimes[r, workerIndex];
+
+                    if (tempWT != null)
+                    {
+                        //put date
+                        temp = dates[r].ToString("MM/dd/yyyy");
+                        oSheet.Cells[rowSpaceIndex, 3] = temp;
+                    
+                        rowCount = 0;
+
+                        for (int i = 0; i < workingTimes[r, workerIndex].getEventNames().Length; i++)
+                        {
+                            rowCount++;
+                        
+                            tempHours = tempWT.getTimeDifferenceInMinutes(tempWT.getStartTimes()[i], tempWT.getEndTimes()[i]);
+
+                            oSheet.Cells[rowSpaceIndex + i + 1, 4] = tempWT.getEventNames()[i];
+                            oSheet.Cells[rowSpaceIndex + i + 1, 5] = tempWT.getStartTimes()[i].ToString("h:mm tt");
+                            oSheet.Cells[rowSpaceIndex + i + 1, 6] = tempWT.getEndTimes()[i].ToString("h:mm tt");
+                            oSheet.Cells[rowSpaceIndex + i + 1, 7] = tempWT.getTimeDifferenceInMinutes(tempWT.getStartTimes()[i], tempWT.getEndTimes()[i]) / 60.0;
+                        }
+ 
+                        rowCount++;
+                        rowSpaceIndex += rowCount;
+                        oSheet.Cells[rowSpaceIndex, 8] = tempWT.getWorkerTotalMinutes() / 60.0;
+                        rowSpaceIndex += 2;
+                    }
+
+                }
+
+                //Format A1:D1 as bold, vertical alignment = center.
+                oSheet.get_Range("A1", "H1").Font.Bold = true;
+                oSheet.get_Range("A1", "H1").VerticalAlignment =
+                    Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
+
+                oRng = oSheet.get_Range("A1", "H1");
+                oRng.EntireColumn.AutoFit();
+
+                //oWB.SaveAs("Total Hours for " + dates[0].ToString("MMMM dd',' yyyy") + " - " + dates[dates.Length - 1].ToString("MMMM dd',' yyyy"));
+
+                
+            }
+            catch
+            {
+
+            }
+        }
+
+        private void exportExcelAllWorkersButton_Click(object sender, EventArgs e)
+        {
+            Microsoft.Office.Interop.Excel.Application oXL;
+            Microsoft.Office.Interop.Excel._Workbook oWB;
+            Microsoft.Office.Interop.Excel._Worksheet oSheet;
+            Microsoft.Office.Interop.Excel.Range oRng;
+            object misvalue = System.Reflection.Missing.Value;
+            try
+            {
+
+                //Start Excel and get Application object.
+                oXL = new Microsoft.Office.Interop.Excel.Application();
+                oXL.Visible = true;
+
+                //Get a new workbook.
+                oWB = (Microsoft.Office.Interop.Excel._Workbook)(oXL.Workbooks.Add(""));
+                oSheet = (Microsoft.Office.Interop.Excel._Worksheet)oWB.ActiveSheet;
+
+                oSheet.Name = "Shift Information By Worker";
+
+                int rowSpaceIndex = 3, rowCount = 0, tempRowIndex;
+                double tempHours;
+                WorkingTime tempWT;
+                String temp = "";
+                bool noWorkFlag;
+
+                //Add table headers going cell by cell.
+                oSheet.Cells[1, 1] = "First Name";
+                oSheet.Cells[1, 2] = "Last Name";
+                oSheet.Cells[1, 3] = "Date";
+                oSheet.Cells[1, 4] = "Event Name";
+                oSheet.Cells[1, 5] = "Shift Start Time";
+                oSheet.Cells[1, 6] = "Shift End Time";
+                oSheet.Cells[1, 7] = "Shift Total Hours";
+                oSheet.Cells[1, 8] = "Total Hours In Day";
+
+
+                
+                oSheet.get_Range("C1", "C1").EntireColumn.NumberFormat = "MM/DD/YYYY";
+
+                //start worker loop
+                for (int w = 0; w < workers.Length; w++)
+                {
+                    noWorkFlag = true;
+                    tempRowIndex = rowSpaceIndex - 1;
+                    //fill in worker name
+                    oSheet.Cells[rowSpaceIndex - 1, 1] = workers[w].getFirstName();
+                    oSheet.Cells[rowSpaceIndex - 1, 2] = workers[w].getLastName();
+
+                    
+
+                    for (int r = 0; r < dates.Length; r++)
+                    {
+                        tempWT = workingTimes[r, w];
+
+                        if (tempWT != null)
+                        {
+                            noWorkFlag = false;
+
+                            //put date
+                            temp = dates[r].ToString("MM/dd/yyyy");
+                            oSheet.Cells[rowSpaceIndex, 3] = temp;
+
+                            rowCount = 0;
+
+                            for (int i = 0; i < workingTimes[r, w].getEventNames().Length; i++)
+                            {
+                                rowCount++;
+
+                                tempHours = tempWT.getTimeDifferenceInMinutes(tempWT.getStartTimes()[i], tempWT.getEndTimes()[i]);
+
+                                oSheet.Cells[rowSpaceIndex + i + 1, 4] = tempWT.getEventNames()[i];
+                                oSheet.Cells[rowSpaceIndex + i + 1, 5] = tempWT.getStartTimes()[i].ToString("h:mm tt");
+                                oSheet.Cells[rowSpaceIndex + i + 1, 6] = tempWT.getEndTimes()[i].ToString("h:mm tt");
+                                oSheet.Cells[rowSpaceIndex + i + 1, 7] = tempWT.getTimeDifferenceInMinutes(tempWT.getStartTimes()[i], tempWT.getEndTimes()[i]) / 60.0;
+                            }
+
+                            rowCount++;
+                            rowSpaceIndex += rowCount;
+                            oSheet.Cells[rowSpaceIndex, 8] = tempWT.getWorkerTotalMinutes() / 60.0;
+                            rowSpaceIndex += 2;
+
+                            
+                        }
+                    }
+
+                    if (noWorkFlag)
+                    {
+                        oSheet.Cells[rowSpaceIndex, 8] = 0;
+                        rowSpaceIndex += 2;
+                    }
+                    oSheet.get_Range("A" + tempRowIndex, "H" + (rowSpaceIndex - 2)).BorderAround2(Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous, Microsoft.Office.Interop.Excel.XlBorderWeight.xlThick);
+
+                    rowSpaceIndex += 2;
+                        
+                }
+            
+                //Format A1:D1 as bold, vertical alignment = center.
+                oSheet.get_Range("A1", "H1").Font.Bold = true;
+                oSheet.get_Range("A1", "H1").VerticalAlignment =
+                    Microsoft.Office.Interop.Excel.XlVAlign.xlVAlignCenter;
+
+                oRng = oSheet.get_Range("A1", "H1");
+                oRng.EntireColumn.AutoFit();
+
+                //oWB.SaveAs("Total Hours for " + dates[0].ToString("MMMM dd',' yyyy") + " - " + dates[dates.Length - 1].ToString("MMMM dd',' yyyy"));
+
+            }
+            catch
+            {
+
+            }
+        }
 
         private void button1_Click(object sender, EventArgs e)
         {
@@ -145,8 +377,14 @@ namespace ProductionServicesAnalyticsProgram
        
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
+            TimeSpan estimatedDiff;
+            DateTime timeSample1, timeSample2;
+            
+            //for finding estimated time
+            int timeRemainingMinutes = 0, timeRemainingHours = 0, timeRemainingSeconds = 0, timeRemainingDays = 0, timePerPageSampleCount = 0;
+            
             //for keeping track of completion of process
-            double progressBarCompletion = 0;
+            double progressBarCompletion = 0, timePerPageAverage = 0, elapsedTime = 0, timePerPageTotal = 0, oldProgressBarCompletion = 0;
 
             //reports process completion percentage
             backgroundWorker1.ReportProgress((int)progressBarCompletion);
@@ -165,10 +403,10 @@ namespace ProductionServicesAnalyticsProgram
             if (totalDays < 0)
                 totalDays *= -1;
             //to account for inclusive of start date and exclusive of end date
-            totalDays++;
+            totalDays ++;
 
             //find progress bar increment value
-            double progressBarIncrement = 90.0 / totalDays;
+            double progressBarIncrement = 95.0 / totalDays;
 
             DateTime currentDate = new DateTime(startDate.Value.Year, startDate.Value.Month, startDate.Value.Day);
 
@@ -182,19 +420,21 @@ namespace ProductionServicesAnalyticsProgram
             options.AddArgument("headless");
 
             //updates progress bar
-            progressBarCompletion += 2;
-            if (progressBarCompletion > 99)
-                progressBarCompletion = 99;
-            if (progressBarCompletion <= 99)
-                backgroundWorker1.ReportProgress((int)progressBarCompletion);
+            updateProgressBar(ref progressBarCompletion, 1.0);
 
             //selenium driver process
             IWebDriver driver = new ChromeDriver(driverService, options);
 
             driver.Url = "http://172.21.20.41/cepdotnet/CEPloginToCEP.aspx";
 
+            //updates progress bar
+            updateProgressBar(ref progressBarCompletion, 1.0);
+
             IWebElement username = driver.FindElement(By.Id("txtUserName"));
             IWebElement password = driver.FindElement(By.Id("txtPassword"));
+
+            //updates progress bar
+            updateProgressBar(ref progressBarCompletion, 1.0);
 
             username.Clear();
             username.SendKeys(user);
@@ -204,13 +444,6 @@ namespace ProductionServicesAnalyticsProgram
 
             IWebElement lgnBtn = driver.FindElement(By.Id("sbtLogin"));
             lgnBtn.Click();
-        
-            //updates the progress bar
-            progressBarCompletion += 3;
-            if (progressBarCompletion > 99)
-                progressBarCompletion = 99;
-            if (progressBarCompletion <= 99)
-                backgroundWorker1.ReportProgress((int)progressBarCompletion);
 
             //grabs live info from the CEP page to get realistic data for exomployees
             IReadOnlyCollection<IWebElement> elements;
@@ -222,6 +455,9 @@ namespace ProductionServicesAnalyticsProgram
             workingTimes = new WorkingTime[totalDays, elements.Count];
             workers = new Worker[elements.Count];
 
+            //updates progress bar
+            updateProgressBar(ref progressBarCompletion, 1.0);
+
             int tempWorkerIndex = 0;
             foreach (IWebElement employerInfo in elements)
             {
@@ -232,21 +468,19 @@ namespace ProductionServicesAnalyticsProgram
                 tempWorkerIndex++;
             }
 
+            //updates progress bar
+            updateProgressBar(ref progressBarCompletion, 1.0);
+
             //temp variables for schedule analysis
             String[] tempElementArray;
             String tempString, tempStringData;
             DateTime tempStart, tempEnd;
             int tempHours, tempMinutes;
 
-            //updates progess bar
-            progressBarCompletion += 5;
-            if (progressBarCompletion > 99)
-                progressBarCompletion = 99;
-            if (progressBarCompletion <= 99)
-                backgroundWorker1.ReportProgress((int)progressBarCompletion);
-
             for (int currentDateIndex = 0; currentDateIndex < totalDays; currentDateIndex++)
             {
+                timeSample1 = DateTime.Now;
+                
                 //update the webpage for analysis
                 driver.Url = "http://172.21.20.41/cepdotnet/CEPHome.aspx?day=" + currentDate.Day.ToString() + "&month=" + currentDate.Month.ToString() + "&year=" + currentDate.Year.ToString();
 
@@ -357,7 +591,7 @@ namespace ProductionServicesAnalyticsProgram
                         if (workingTimes[currentDateIndex, findWorkerIndex(tempFirstName, tempLastName)] == null)
                             workingTimes[currentDateIndex, findWorkerIndex(tempFirstName, tempLastName)] = new WorkingTime(tempString, tempStart, tempEnd);
                         else
-                            workingTimes[currentDateIndex, findWorkerIndex(tempFirstName, tempLastName)].addWorkTimes(tempStart, tempEnd);
+                            workingTimes[currentDateIndex, findWorkerIndex(tempFirstName, tempLastName)].addWorkTimes(tempString, tempStart, tempEnd);
 
                     }
 
@@ -366,12 +600,31 @@ namespace ProductionServicesAnalyticsProgram
                 //updates the current date
                 currentDate = currentDate.AddDays(1);
 
+                oldProgressBarCompletion = progressBarCompletion;
+
                 //update the progress bar
-                progressBarCompletion += progressBarIncrement;
-                if (progressBarCompletion > 99)
-                    progressBarCompletion = 99;
-                if (progressBarCompletion <= 99)
-                    backgroundWorker1.ReportProgress((int)progressBarCompletion);
+                updateProgressBar(ref progressBarCompletion, progressBarIncrement);
+
+                //finds elapsed time for one time sample
+                timeSample2 = DateTime.Now;
+                estimatedDiff = timeSample2 - timeSample1;
+                elapsedTime = estimatedDiff.TotalSeconds;
+                if (elapsedTime < 0)
+                    elapsedTime *= -1;
+
+                timePerPageSampleCount++;
+                timePerPageTotal += elapsedTime;
+                timePerPageAverage = timePerPageTotal / timePerPageSampleCount;
+
+                timeRemainingSeconds = (int)((100 - progressBarCompletion) * (timePerPageAverage / (progressBarCompletion - oldProgressBarCompletion)));
+
+                normalizeTime(ref timeRemainingSeconds, ref timeRemainingMinutes, ref timeRemainingHours, ref timeRemainingDays);
+
+                Invoke(new Action(() =>
+                {
+                    estimatedTimeRemaining.Text = getElapsedTimeInString(timeRemainingSeconds, timeRemainingMinutes, timeRemainingHours, timeRemainingDays);
+                }));
+                
             }
 
             
@@ -398,6 +651,11 @@ namespace ProductionServicesAnalyticsProgram
 
         private void BackgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            progressBar1.Step = 100;
+
+            estimatedTimeRemainingLabel.Visible = false;
+            estimatedTimeRemaining.Visible = false;
+
             percentageLabel.Text = "Complete";
 
             //this entire section is for figuring out the overlapped workers and the times that are overlapping each day
@@ -477,14 +735,17 @@ namespace ProductionServicesAnalyticsProgram
 
         private void overtimeCheckButton_Click(object sender, EventArgs e)
         {
+            if (overtimeNameListBox.Items.Count > 0)
+                overtimeNameListBox.Items.Clear();
+
             int dateIndex, maxSpan = 7, tempTotal;
             DateTime dateCheck = overtimeDatePicker.Value;
             dateCheck = dateCheck.AddDays(7);
 
             //checks if valid selection
-            if (dateCheck.CompareTo(endDate.Value) >= 0)
+            if (dateCheck.CompareTo(endDate.Value) > 0)
             {
-                MessageBox.Show("Choose a date between (including start date)\nthe start and end date selected.\nEnsure that the date selection is at least 8 days apart\nand that the selected date for checking for overtime workers is\nat least 8 days from the end date selection.");
+                MessageBox.Show("Choose a date between (including start date)\nthe start and end date selected.\nEnsure that the date selected for overtime check is 7 days\nor more away from the end date selected.");
                 return;
             }
 
@@ -559,7 +820,8 @@ namespace ProductionServicesAnalyticsProgram
         //gets the index of any sort of time parameter found in string extracted from CEP
         private int getIndexOfTime(String text)
         {
-            int i1 = 10000, i2 = 0;
+            //will fail if working information is longer than 1000000 characters
+            int i1 = 1000000, i2 = 0;
             if (text.Contains("NOON"))
                 i1 = text.IndexOf("NOON");
             if (text.Contains("MIDNIGHT") && i1 > text.IndexOf("MIDNIGHT") && text.IndexOf("MIDNIGHT") != -1)
@@ -582,15 +844,19 @@ namespace ProductionServicesAnalyticsProgram
         //sets the total worker minutes for each worker
         private void setAllWorkerTotalMinutes()
         {
-            for (int i = 0; i < workingTimes.GetLength(0); i++)
+            int tempTotal;
+            for (int i = 0; i < workers.Length; i++)
             {
-                for (int k = 0; k < workers.Length; k++)
+                tempTotal = 0;
+                for (int k = 0; k < dates.Length; k++)
                 {
-                    if (workingTimes[i, k] != null)
+                    if (workingTimes[k, i] != null)
                     {
-                        workers[k].setTotalMinutes(workingTimes[i, k].getWorkerTotalMinutes());
+                        tempTotal += workingTimes[k, i].getWorkerTotalMinutes();
                     }
+
                 }
+                workers[i].setTotalMinutes(tempTotal);
             }
         }
 
@@ -662,26 +928,77 @@ namespace ProductionServicesAnalyticsProgram
 
                 if (tempWorkingTime != null)
                 {
-                    overlapInformationView.Items.Add(dates[d].ToString("dddd, dd MMMM yyyy"));
-
                     for (int i = 0; i < tempWorkingTime.getOverlapFlags().Length; i++)
                     {
 
                         if (tempWorkingTime.getOverlapFlags()[i] == 1)
                         {
                             overlapInformationView.Items.Add(tempWorkingTime.getEventNames()[i]);
+                            overlapInformationView.Items.Add(dates[d].ToString("dddd, dd MMMM yyyy"));
                             overlapInformationView.Items.Add("Start Time: " + tempWorkingTime.getStartTimes()[i].ToString("h:mm tt"));
                             overlapInformationView.Items.Add("End Time: " + tempWorkingTime.getEndTimes()[i].ToString("h:mm tt"));
                             overlapInformationView.Items.Add("");
                         }
 
                     }
-                    overlapInformationView.Items.Add("");
-                    overlapInformationView.Items.Add("");
                 }
 
             }
         }
+
+        private void startDate_ValueChanged(object sender, EventArgs e)
+        {
+            overtimeDatePicker.Value = startDate.Value;
+        }
+
+        private void normalizeTime(ref int tRSeconds, ref int tRMinutes, ref int tRHours, ref int tRDays)
+        {
+            tRMinutes = 0;
+            tRHours = 0;
+            tRDays = 0;
+
+            while (tRSeconds >= 60)
+            {
+                tRMinutes++;
+                tRSeconds -= 60;
+            }
+            while (tRMinutes >= 60)
+            {
+                tRHours++;
+                tRMinutes -= 60;
+            }
+            while (tRHours >= 24)
+            {
+                tRDays++;
+                tRHours -= 24;
+            }
+        }
+
+        private String getElapsedTimeInString(int tRSeconds, int tRMinutes, int tRHours, int tRDays)
+        {
+            String temp = "";
+            if (tRDays > 0)
+                temp += tRDays + "d ";
+            if (tRHours > 0 || tRDays > 0)
+                temp += tRHours + "h ";
+            if (tRMinutes > 0 || tRHours > 0 || tRDays > 0)
+                temp += tRMinutes + "m ";
+            if (tRSeconds >= 0)
+                temp += tRSeconds + "s ";
+            return temp;
+        }
+
+        private void updateProgressBar(ref double progressBarCompletion, double increment)
+        {
+            //updates progress bar
+            progressBarCompletion += increment;
+            if (progressBarCompletion > 99)
+                progressBarCompletion = 99;
+            if (progressBarCompletion <= 99)
+                backgroundWorker1.ReportProgress((int)progressBarCompletion);
+        }
+
+        
     }
 }
 

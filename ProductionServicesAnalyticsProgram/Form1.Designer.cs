@@ -62,6 +62,10 @@
             this.overlapInformationView = new System.Windows.Forms.ListBox();
             this.overlappingLabel = new System.Windows.Forms.Label();
             this.overtimeLabel = new System.Windows.Forms.Label();
+            this.estimatedTimeRemainingLabel = new System.Windows.Forms.Label();
+            this.estimatedTimeRemaining = new System.Windows.Forms.Label();
+            this.exportExcelWorkerButton = new System.Windows.Forms.Button();
+            this.exportExcelAllWorkersButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -81,6 +85,7 @@
             this.startDate.Name = "startDate";
             this.startDate.Size = new System.Drawing.Size(307, 26);
             this.startDate.TabIndex = 2;
+            this.startDate.ValueChanged += new System.EventHandler(this.startDate_ValueChanged);
             // 
             // endDate
             // 
@@ -213,7 +218,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(102, 20);
             this.label4.TabIndex = 23;
-            this.label4.Text = "Version 1.0.0";
+            this.label4.Text = "Version 1.0.1";
             // 
             // backgroundWorker1
             // 
@@ -225,6 +230,7 @@
             this.progressBar1.Margin = new System.Windows.Forms.Padding(2);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(398, 32);
+            this.progressBar1.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.progressBar1.TabIndex = 28;
             // 
             // percentageLabel
@@ -322,12 +328,55 @@
             this.overtimeLabel.TabIndex = 41;
             this.overtimeLabel.Text = "Overtime Checker";
             // 
+            // estimatedTimeRemainingLabel
+            // 
+            this.estimatedTimeRemainingLabel.AutoSize = true;
+            this.estimatedTimeRemainingLabel.Location = new System.Drawing.Point(1260, 95);
+            this.estimatedTimeRemainingLabel.Name = "estimatedTimeRemainingLabel";
+            this.estimatedTimeRemainingLabel.Size = new System.Drawing.Size(203, 20);
+            this.estimatedTimeRemainingLabel.TabIndex = 42;
+            this.estimatedTimeRemainingLabel.Text = "Estimated Time Remaining:";
+            this.estimatedTimeRemainingLabel.Visible = false;
+            // 
+            // estimatedTimeRemaining
+            // 
+            this.estimatedTimeRemaining.AutoSize = true;
+            this.estimatedTimeRemaining.Location = new System.Drawing.Point(1260, 117);
+            this.estimatedTimeRemaining.Name = "estimatedTimeRemaining";
+            this.estimatedTimeRemaining.Size = new System.Drawing.Size(0, 20);
+            this.estimatedTimeRemaining.TabIndex = 43;
+            this.estimatedTimeRemaining.Visible = false;
+            // 
+            // exportExcelWorkerButton
+            // 
+            this.exportExcelWorkerButton.Location = new System.Drawing.Point(20, 652);
+            this.exportExcelWorkerButton.Name = "exportExcelWorkerButton";
+            this.exportExcelWorkerButton.Size = new System.Drawing.Size(244, 61);
+            this.exportExcelWorkerButton.TabIndex = 44;
+            this.exportExcelWorkerButton.Text = "Export Selected Worker Data To Excel";
+            this.exportExcelWorkerButton.UseVisualStyleBackColor = true;
+            this.exportExcelWorkerButton.Click += new System.EventHandler(this.exportExcelWorkerButton_Click);
+            // 
+            // exportExcelAllWorkersButton
+            // 
+            this.exportExcelAllWorkersButton.Location = new System.Drawing.Point(20, 719);
+            this.exportExcelAllWorkersButton.Name = "exportExcelAllWorkersButton";
+            this.exportExcelAllWorkersButton.Size = new System.Drawing.Size(244, 69);
+            this.exportExcelAllWorkersButton.TabIndex = 45;
+            this.exportExcelAllWorkersButton.Text = "Export All Worker Data To Excel";
+            this.exportExcelAllWorkersButton.UseVisualStyleBackColor = true;
+            this.exportExcelAllWorkersButton.Click += new System.EventHandler(this.exportExcelAllWorkersButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.ClientSize = new System.Drawing.Size(1493, 926);
+            this.Controls.Add(this.exportExcelAllWorkersButton);
+            this.Controls.Add(this.exportExcelWorkerButton);
+            this.Controls.Add(this.estimatedTimeRemaining);
+            this.Controls.Add(this.estimatedTimeRemainingLabel);
             this.Controls.Add(this.overtimeLabel);
             this.Controls.Add(this.overlappingLabel);
             this.Controls.Add(this.overlapInformationView);
@@ -399,6 +448,10 @@
         private System.Windows.Forms.ListBox overlapInformationView;
         private System.Windows.Forms.Label overlappingLabel;
         private System.Windows.Forms.Label overtimeLabel;
+        private System.Windows.Forms.Label estimatedTimeRemainingLabel;
+        private System.Windows.Forms.Label estimatedTimeRemaining;
+        private System.Windows.Forms.Button exportExcelWorkerButton;
+        private System.Windows.Forms.Button exportExcelAllWorkersButton;
     }
 }
 
