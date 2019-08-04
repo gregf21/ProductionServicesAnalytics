@@ -14,6 +14,11 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Diagnostics;
 using System.Globalization;
+using Google.Apis.Auth.OAuth2;
+using Google.Apis.Sheets.v4;
+using Google.Apis.Sheets.v4.Data;
+using Google.Apis.Services;
+using Google.Apis.Util.Store;
 
 
 namespace ProductionServicesAnalyticsProgram
@@ -896,7 +901,7 @@ namespace ProductionServicesAnalyticsProgram
                 chart1.Series[0].Points.AddXY(i + 1, dataArrayForSelectedWorker[i]);
                 chart1.Series[0].Points[i].MarkerStyle = MarkerStyle.Circle;
                 chart1.Series[0].Points[i].MarkerSize = 10;
-                chart1.Series[0].Points[i].MarkerColor = Color.Blue;
+                //chart1.Series[0].Points[i].MarkerColor = Color.Blue;
 
                 total += dataArrayForSelectedWorker[i];
             }
@@ -998,7 +1003,63 @@ namespace ProductionServicesAnalyticsProgram
                 backgroundWorker1.ReportProgress((int)progressBarCompletion);
         }
 
-        
+        private void button2_Click(object sender, EventArgs e)
+        {
+            string[] Scopes = { SheetsService.Scope.Spreadsheets }; // static string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
+            string ApplicationName = "Production Services Schedule";
+
+                UserCredential credential;
+
+                using (var stream =
+                    new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+                {
+                    string credPath = System.Environment.GetFolderPath(
+                        System.Environment.SpecialFolder.Personal);
+
+
+                    credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                        GoogleClientSecrets.Load(stream).Secrets,
+                        Scopes,
+                        "user",
+                        System.Threading.CancellationToken.None,
+                        new FileDataStore(credPath, true)).Result;
+                    Console.WriteLine("Credential file saved to: " + credPath);
+                }
+
+                // Create Google Sheets API service.
+                var service = new SheetsService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = credential,
+                    ApplicationName = ApplicationName,
+                });
+            /*
+                            oSheet.Cells[1, 1] = "First Name";
+                oSheet.Cells[1, 2] = "Last Name";
+                oSheet.Cells[1, 3] = "Date";
+                oSheet.Cells[1, 4] = "Event Name";
+                oSheet.Cells[1, 5] = "Shift Start Time";
+                oSheet.Cells[1, 6] = "Shift End Time";
+                oSheet.Cells[1, 7] = "Shift Total Hours";
+                oSheet.Cells[1, 8] = "Total Hours In Day";
+                */
+                String spreadsheetId2 = "1JfCJuIV2rR8xbYmtx4AT_8BtKM_wtG6kShBW8Lyt3xk";
+                String range2 = "Schedule!A1";  // update cell F5 
+            var oblist = new List<object>() { "First Name" };
+            ValueRange valueRange = new ValueRange();
+         //       valueRange.MajorDimension = "ROWS";//"ROWS";//COLUMNS
+
+                valueRange.Values = new List<IList<object>> { oblist };
+
+                SpreadsheetsResource.ValuesResource.UpdateRequest update = service.Spreadsheets.Values.Update(valueRange, spreadsheetId2, range2);
+                update.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
+                UpdateValuesResponse result2 = update.Execute();
+
+
+                Console.WriteLine("done!");
+
+      
+        }
+
     }
 }
 

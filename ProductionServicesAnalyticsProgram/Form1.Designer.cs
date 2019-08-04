@@ -66,6 +66,7 @@
             this.estimatedTimeRemaining = new System.Windows.Forms.Label();
             this.exportExcelWorkerButton = new System.Windows.Forms.Button();
             this.exportExcelAllWorkersButton = new System.Windows.Forms.Button();
+            this.button2 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -367,12 +368,23 @@
             this.exportExcelAllWorkersButton.UseVisualStyleBackColor = true;
             this.exportExcelAllWorkersButton.Click += new System.EventHandler(this.exportExcelAllWorkersButton_Click);
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(363, 702);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(344, 156);
+            this.button2.TabIndex = 46;
+            this.button2.Text = "button2";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.ClientSize = new System.Drawing.Size(1493, 926);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.exportExcelAllWorkersButton);
             this.Controls.Add(this.exportExcelWorkerButton);
             this.Controls.Add(this.estimatedTimeRemaining);
@@ -452,6 +464,7 @@
         private System.Windows.Forms.Label estimatedTimeRemaining;
         private System.Windows.Forms.Button exportExcelWorkerButton;
         private System.Windows.Forms.Button exportExcelAllWorkersButton;
+        private System.Windows.Forms.Button button2;
     }
 }
 
