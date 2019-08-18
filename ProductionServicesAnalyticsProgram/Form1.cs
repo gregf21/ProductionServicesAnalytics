@@ -83,7 +83,7 @@ namespace ProductionServicesAnalyticsProgram
         //export total hours for a certain period within the searched criteria to an excel file
         private void excelExport_Click(object sender, EventArgs e)
         {
-            
+
             //String[] jobsData = new String[jobs.Count];
             Microsoft.Office.Interop.Excel.Application oXL;
             Microsoft.Office.Interop.Excel._Workbook oWB;
@@ -107,7 +107,7 @@ namespace ProductionServicesAnalyticsProgram
                 oSheet.Cells[1, 2] = "Last Name";
                 oSheet.Cells[1, 3] = "Total Hours";
 
-                for(int r = 0; r < workers.Length; r++)
+                for (int r = 0; r < workers.Length; r++)
                 {
                     oSheet.Cells[r + 2, 1] = workers[r].getFirstName();
                     oSheet.Cells[r + 2, 2] = workers[r].getLastName();
@@ -163,7 +163,7 @@ namespace ProductionServicesAnalyticsProgram
             {
 
             }
-            
+
         }
 
         private void exportExcelWorkerButton_Click(object sender, EventArgs e)
@@ -176,7 +176,7 @@ namespace ProductionServicesAnalyticsProgram
             try
             {
                 int workerIndex = findWorkerIndex(nameListBox.SelectedValue.ToString().Substring(0, nameListBox.SelectedValue.ToString().IndexOf(" ")), nameListBox.SelectedValue.ToString().Substring(nameListBox.SelectedValue.ToString().IndexOf(" ") + 1));
-                
+
                 //Start Excel and get Application object.
                 oXL = new Microsoft.Office.Interop.Excel.Application();
                 oXL.Visible = true;
@@ -217,13 +217,13 @@ namespace ProductionServicesAnalyticsProgram
                         //put date
                         temp = dates[r].ToString("MM/dd/yyyy");
                         oSheet.Cells[rowSpaceIndex, 3] = temp;
-                    
+
                         rowCount = 0;
 
                         for (int i = 0; i < workingTimes[r, workerIndex].getEventNames().Length; i++)
                         {
                             rowCount++;
-                        
+
                             tempHours = tempWT.getTimeDifferenceInMinutes(tempWT.getStartTimes()[i], tempWT.getEndTimes()[i]);
 
                             oSheet.Cells[rowSpaceIndex + i + 1, 4] = tempWT.getEventNames()[i];
@@ -231,7 +231,7 @@ namespace ProductionServicesAnalyticsProgram
                             oSheet.Cells[rowSpaceIndex + i + 1, 6] = tempWT.getEndTimes()[i].ToString("h:mm tt");
                             oSheet.Cells[rowSpaceIndex + i + 1, 7] = tempWT.getTimeDifferenceInMinutes(tempWT.getStartTimes()[i], tempWT.getEndTimes()[i]) / 60.0;
                         }
- 
+
                         rowCount++;
                         rowSpaceIndex += rowCount;
                         oSheet.Cells[rowSpaceIndex, 8] = tempWT.getWorkerTotalMinutes() / 60.0;
@@ -250,7 +250,7 @@ namespace ProductionServicesAnalyticsProgram
 
                 //oWB.SaveAs("Total Hours for " + dates[0].ToString("MMMM dd',' yyyy") + " - " + dates[dates.Length - 1].ToString("MMMM dd',' yyyy"));
 
-                
+
             }
             catch
             {
@@ -295,7 +295,7 @@ namespace ProductionServicesAnalyticsProgram
                 oSheet.Cells[1, 8] = "Total Hours In Day";
 
 
-                
+
                 oSheet.get_Range("C1", "C1").EntireColumn.NumberFormat = "MM/DD/YYYY";
 
                 //start worker loop
@@ -307,7 +307,7 @@ namespace ProductionServicesAnalyticsProgram
                     oSheet.Cells[rowSpaceIndex - 1, 1] = workers[w].getFirstName();
                     oSheet.Cells[rowSpaceIndex - 1, 2] = workers[w].getLastName();
 
-                    
+
 
                     for (int r = 0; r < dates.Length; r++)
                     {
@@ -340,7 +340,7 @@ namespace ProductionServicesAnalyticsProgram
                             oSheet.Cells[rowSpaceIndex, 8] = tempWT.getWorkerTotalMinutes() / 60.0;
                             rowSpaceIndex += 2;
 
-                            
+
                         }
                     }
 
@@ -352,9 +352,9 @@ namespace ProductionServicesAnalyticsProgram
                     oSheet.get_Range("A" + tempRowIndex, "H" + (rowSpaceIndex - 2)).BorderAround2(Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous, Microsoft.Office.Interop.Excel.XlBorderWeight.xlThick);
 
                     rowSpaceIndex += 2;
-                        
+
                 }
-            
+
                 //Format A1:D1 as bold, vertical alignment = center.
                 oSheet.get_Range("A1", "H1").Font.Bold = true;
                 oSheet.get_Range("A1", "H1").VerticalAlignment =
@@ -379,15 +379,15 @@ namespace ProductionServicesAnalyticsProgram
                 "Created by Greg Fairbanks and Matthew Bocharnikov.\n\n" +
                 "For use at Virginia Tech Production Services.");
         }
-       
+
         private void BackgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             TimeSpan estimatedDiff;
             DateTime timeSample1, timeSample2;
-            
+
             //for finding estimated time
             int timeRemainingMinutes = 0, timeRemainingHours = 0, timeRemainingSeconds = 0, timeRemainingDays = 0, timePerPageSampleCount = 0;
-            
+
             //for keeping track of completion of process
             double progressBarCompletion = 0, timePerPageAverage = 0, elapsedTime = 0, timePerPageTotal = 0, oldProgressBarCompletion = 0;
 
@@ -408,7 +408,7 @@ namespace ProductionServicesAnalyticsProgram
             if (totalDays < 0)
                 totalDays *= -1;
             //to account for inclusive of start date and exclusive of end date
-            totalDays ++;
+            totalDays++;
 
             //find progress bar increment value
             double progressBarIncrement = 95.0 / totalDays;
@@ -485,7 +485,7 @@ namespace ProductionServicesAnalyticsProgram
             for (int currentDateIndex = 0; currentDateIndex < totalDays; currentDateIndex++)
             {
                 timeSample1 = DateTime.Now;
-                
+
                 //update the webpage for analysis
                 driver.Url = "http://172.21.20.41/cepdotnet/CEPHome.aspx?day=" + currentDate.Day.ToString() + "&month=" + currentDate.Month.ToString() + "&year=" + currentDate.Year.ToString();
 
@@ -542,9 +542,9 @@ namespace ProductionServicesAnalyticsProgram
                             tempStringData = tempStringData.Substring(2).TrimStart();
 
                             tempString = tempStringData.Substring(0, 2);
-                            if (tempString.Equals("PM") && tempHours!= 12)
+                            if (tempString.Equals("PM") && tempHours != 12)
                                 tempHours += 12;
-                           
+
 
 
                             tempStart = new DateTime(currentDate.Year, currentDate.Month, currentDate.Day, tempHours, tempMinutes, 0);
@@ -629,10 +629,10 @@ namespace ProductionServicesAnalyticsProgram
                 {
                     estimatedTimeRemaining.Text = getElapsedTimeInString(timeRemainingSeconds, timeRemainingMinutes, timeRemainingHours, timeRemainingDays);
                 }));
-                
+
             }
 
-            
+
             //quits driver and calculates the total minutes of each worker
             driver.Quit();
             setAllWorkerTotalMinutes();
@@ -912,7 +912,7 @@ namespace ProductionServicesAnalyticsProgram
         //check for repeating values in overlapping string array
         private bool checkForValueInStringArray(String[] arr, int maxIndex, String val)
         {
-            for(int i = 0; i < maxIndex; i++)
+            for (int i = 0; i < maxIndex; i++)
             {
                 if (arr[i].Equals(val))
                     return true;
@@ -1005,8 +1005,139 @@ namespace ProductionServicesAnalyticsProgram
 
         private void button2_Click(object sender, EventArgs e)
         {
+            DeleteEntry();
             string[] Scopes = { SheetsService.Scope.Spreadsheets }; // static string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
             string ApplicationName = "Production Services Schedule";
+
+            UserCredential credential;
+
+            using (var stream =
+                new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+            {
+                string credPath = System.Environment.GetFolderPath(
+                    System.Environment.SpecialFolder.Personal);
+
+
+                credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    GoogleClientSecrets.Load(stream).Secrets,
+                    Scopes,
+                    "user",
+                    System.Threading.CancellationToken.None,
+                    new FileDataStore(credPath, true)).Result;
+                Console.WriteLine("Credential file saved to: " + credPath);
+            }
+
+            // Create Google Sheets API service.
+            var service = new SheetsService(new BaseClientService.Initializer()
+            {
+                HttpClientInitializer = credential,
+                ApplicationName = ApplicationName,
+            });
+            String spreadsheetId2 = "1JfCJuIV2rR8xbYmtx4AT_8BtKM_wtG6kShBW8Lyt3xk";
+            String range2 = "Schedule!A1";  // update cell F5 
+            var oblist = new List<object>() { "First Name", "Last Name", "Date", "Event Name", "Shift Start Time", "Shift End Time", "Shift Total Hours", "Total Hours in Day" };
+            ValueRange valueRange = new ValueRange();
+            //       valueRange.MajorDimension = "ROWS";//"ROWS";//COLUMNS
+
+            valueRange.Values = new List<IList<object>> { oblist };
+
+            SpreadsheetsResource.ValuesResource.UpdateRequest update = service.Spreadsheets.Values.Update(valueRange, spreadsheetId2, range2);
+            update.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
+            UpdateValuesResponse result2 = update.Execute();
+            try
+            {
+                var workerlist = new List<object>() { };
+                int rowSpaceIndex = 3, rowCount = 0, tempRowIndex;
+                double tempHours;
+                WorkingTime tempWT;
+                String temp = "";
+                bool noWorkFlag;
+
+                //start worker loop
+                for (int w = 0; w < workers.Length; w++)
+                {
+                    noWorkFlag = true;
+                    tempRowIndex = rowSpaceIndex - 1;
+                    //fill in worker name
+                    workerlist.Add(workers[w].getFirstName());
+                    workerlist.Add(workers[w].getLastName());
+
+
+
+                    for (int r = 0; r < dates.Length; r++)
+                    {
+                        tempWT = workingTimes[r, w];
+
+                        if (tempWT != null)
+                        {
+                            noWorkFlag = false;
+
+                            //put date
+                            temp = dates[r].ToString("MM/dd/yyyy");
+                            workerlist.Add(temp);
+
+                            rowCount = 0;
+
+                            for (int i = 0; i < workingTimes[r, w].getEventNames().Length; i++)
+                            {
+                                if(rowCount > 0)
+                                {
+                                    CreateEntry(workerlist);
+                                    workerlist.Clear();
+                                    workerlist.Add(" ");
+                                    workerlist.Add(" ");
+                                    workerlist.Add(" ");
+                                }
+                                rowCount++;
+                                
+                                tempHours = tempWT.getTimeDifferenceInMinutes(tempWT.getStartTimes()[i], tempWT.getEndTimes()[i]);
+
+                                workerlist.Add(tempWT.getEventNames()[i]);
+                                workerlist.Add(tempWT.getStartTimes()[i].ToString("h:mm tt"));
+                                workerlist.Add(tempWT.getEndTimes()[i].ToString("h:mm tt"));
+                                workerlist.Add(tempWT.getTimeDifferenceInMinutes(tempWT.getStartTimes()[i], tempWT.getEndTimes()[i]) / 60.0);
+                            }
+
+                            rowCount++;
+                            rowSpaceIndex += rowCount;
+                            workerlist.Add(tempWT.getWorkerTotalMinutes() / 60.0);
+                            rowSpaceIndex += 2;
+                            CreateEntry(workerlist);
+                            workerlist.Clear();
+                            workerlist.Add(" ");
+                            workerlist.Add(" ");
+                        }
+
+                    }
+                    CreateEntry(workerlist);
+                    workerlist.Clear();
+                    if (noWorkFlag)
+                    {
+                        //oSheet.Cells[rowSpaceIndex, 8] = 0;
+                        //rowSpaceIndex += 2;
+                    }
+                    //oSheet.get_Range("A" + tempRowIndex, "H" + (rowSpaceIndex - 2)).BorderAround2(Microsoft.Office.Interop.Excel.XlLineStyle.xlContinuous, Microsoft.Office.Interop.Excel.XlBorderWeight.xlThick);
+
+                    rowSpaceIndex += 2;
+
+                }
+
+            }
+            catch
+            {
+
+            }
+
+
+            Console.WriteLine("done!");
+
+
+        }
+        static void CreateEntry(List<object> workerlist)
+        {
+            {
+                string[] Scopes = { SheetsService.Scope.Spreadsheets }; // static string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
+                string ApplicationName = "Production Services Schedule";
 
                 UserCredential credential;
 
@@ -1025,41 +1156,59 @@ namespace ProductionServicesAnalyticsProgram
                         new FileDataStore(credPath, true)).Result;
                     Console.WriteLine("Credential file saved to: " + credPath);
                 }
-
-                // Create Google Sheets API service.
                 var service = new SheetsService(new BaseClientService.Initializer()
                 {
                     HttpClientInitializer = credential,
                     ApplicationName = ApplicationName,
                 });
-            /*
-                            oSheet.Cells[1, 1] = "First Name";
-                oSheet.Cells[1, 2] = "Last Name";
-                oSheet.Cells[1, 3] = "Date";
-                oSheet.Cells[1, 4] = "Event Name";
-                oSheet.Cells[1, 5] = "Shift Start Time";
-                oSheet.Cells[1, 6] = "Shift End Time";
-                oSheet.Cells[1, 7] = "Shift Total Hours";
-                oSheet.Cells[1, 8] = "Total Hours In Day";
-                */
-                String spreadsheetId2 = "1JfCJuIV2rR8xbYmtx4AT_8BtKM_wtG6kShBW8Lyt3xk";
-                String range2 = "Schedule!A1";  // update cell F5 
-            var oblist = new List<object>() { "First Name" };
-            ValueRange valueRange = new ValueRange();
-         //       valueRange.MajorDimension = "ROWS";//"ROWS";//COLUMNS
-
-                valueRange.Values = new List<IList<object>> { oblist };
-
-                SpreadsheetsResource.ValuesResource.UpdateRequest update = service.Spreadsheets.Values.Update(valueRange, spreadsheetId2, range2);
-                update.ValueInputOption = SpreadsheetsResource.ValuesResource.UpdateRequest.ValueInputOptionEnum.RAW;
-                UpdateValuesResponse result2 = update.Execute();
+                String SpreadsheetId = "1JfCJuIV2rR8xbYmtx4AT_8BtKM_wtG6kShBW8Lyt3xk";
+                var range = "Schedule!A1";
+                var valueRange = new ValueRange();
 
 
-                Console.WriteLine("done!");
+                valueRange.Values = new List<IList<object>> { workerlist };
 
-      
+                var appendRequest = service.Spreadsheets.Values.Append(valueRange, SpreadsheetId, range);
+                appendRequest.ValueInputOption = SpreadsheetsResource.ValuesResource.AppendRequest.ValueInputOptionEnum.USERENTERED;
+                var appendReponse = appendRequest.Execute();
+            }
+
         }
+        static void DeleteEntry()
+        {
+            {
+                string[] Scopes = { SheetsService.Scope.Spreadsheets }; // static string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
+                string ApplicationName = "Production Services Schedule";
 
+                UserCredential credential;
+
+                using (var stream =
+                    new FileStream("credentials.json", FileMode.Open, FileAccess.Read))
+                {
+                    string credPath = System.Environment.GetFolderPath(
+                        System.Environment.SpecialFolder.Personal);
+
+
+                    credential = GoogleWebAuthorizationBroker.AuthorizeAsync(
+                        GoogleClientSecrets.Load(stream).Secrets,
+                        Scopes,
+                        "user",
+                        System.Threading.CancellationToken.None,
+                        new FileDataStore(credPath, true)).Result;
+                    Console.WriteLine("Credential file saved to: " + credPath);
+                }
+                var service = new SheetsService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = credential,
+                    ApplicationName = ApplicationName,
+                });
+                String SpreadsheetId = "1JfCJuIV2rR8xbYmtx4AT_8BtKM_wtG6kShBW8Lyt3xk";
+                var range = "Schedule!A1:Z";
+                var requestBody = new ClearValuesRequest();
+
+                var deleteRequest = service.Spreadsheets.Values.Clear(requestBody, SpreadsheetId, range);
+                var deleteReponse = deleteRequest.Execute();
+            }
+        }
     }
 }
-

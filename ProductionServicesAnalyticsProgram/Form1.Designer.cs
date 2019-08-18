@@ -370,11 +370,11 @@
             // 
             // button2
             // 
-            this.button2.Location = new System.Drawing.Point(363, 702);
+            this.button2.Location = new System.Drawing.Point(20, 794);
             this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(344, 156);
+            this.button2.Size = new System.Drawing.Size(244, 75);
             this.button2.TabIndex = 46;
-            this.button2.Text = "button2";
+            this.button2.Text = "Send Data to Google Sheets";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
