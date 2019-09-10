@@ -91,6 +91,7 @@
     <Compile Include="Scratchpad.Designer.cs">
       <DependentUpon>Scratchpad.cs</DependentUpon>
     </Compile>
+    <Compile Include="Shift.cs" />
     <Compile Include="Worker.cs" />
     <Compile Include="WorkingTime.cs" />
     <EmbeddedResource Include="Analytics.resx">
