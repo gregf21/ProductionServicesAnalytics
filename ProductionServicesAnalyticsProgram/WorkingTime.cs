@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ProductionServicesAnalyticsProgram
 {
-    class WorkingTime
+    public class WorkingTime
     {
         //everything is indexed to the same index which is the date selection
         

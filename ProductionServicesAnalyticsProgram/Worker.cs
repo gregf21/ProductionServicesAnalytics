@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ProductionServicesAnalyticsProgram
 {
-    class Worker
+    public class Worker
     {
         private String firstName, lastName;
         private int totalMinutes;

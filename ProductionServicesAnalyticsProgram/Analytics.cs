@@ -26,14 +26,14 @@ namespace ProductionServicesAnalyticsProgram
     public partial class Analytics : Form
     {
         //Array for holding the dates of the selections
-        DateTime[] dates;
+        private DateTime[] dates;
 
         //Array for holding the worker information
-        Worker[] workers;
+        private Worker[] workers;
 
         //2D array of working times where the rows are dates and the columns are workers
         //The elements are the times that are worked by each worker on each date
-        WorkingTime[,] workingTimes;
+        private WorkingTime[,] workingTimes;
 
         public Analytics()
         {
@@ -1218,5 +1218,7 @@ namespace ProductionServicesAnalyticsProgram
             Scratchpad workspace = new Scratchpad();
             workspace.Show();
         }
+
+     
     }
 }
