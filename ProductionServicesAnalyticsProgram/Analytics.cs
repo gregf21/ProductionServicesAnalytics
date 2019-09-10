@@ -19,11 +19,11 @@ using Google.Apis.Sheets.v4;
 using Google.Apis.Sheets.v4.Data;
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
-
+using System.Threading;
 
 namespace ProductionServicesAnalyticsProgram
 {
-    public partial class Form1 : Form
+    public partial class Analytics : Form
     {
         //Array for holding the dates of the selections
         DateTime[] dates;
@@ -35,7 +35,7 @@ namespace ProductionServicesAnalyticsProgram
         //The elements are the times that are worked by each worker on each date
         WorkingTime[,] workingTimes;
 
-        public Form1()
+        public Analytics()
         {
             InitializeComponent();
         }
@@ -1135,6 +1135,8 @@ namespace ProductionServicesAnalyticsProgram
         }
         static void CreateEntry(List<object> workerlist)
         {
+            int milliseconds = 2000;
+            Thread.Sleep(milliseconds);
             {
                 string[] Scopes = { SheetsService.Scope.Spreadsheets }; // static string[] Scopes = { SheetsService.Scope.SpreadsheetsReadonly };
                 string ApplicationName = "Production Services Schedule";
@@ -1209,6 +1211,12 @@ namespace ProductionServicesAnalyticsProgram
                 var deleteRequest = service.Spreadsheets.Values.Clear(requestBody, SpreadsheetId, range);
                 var deleteReponse = deleteRequest.Execute();
             }
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            Scratchpad workspace = new Scratchpad();
+            workspace.Show();
         }
     }
 }
